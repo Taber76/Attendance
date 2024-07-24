@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserHelper = void 0;
 const prisma_client_js_1 = require("../config/prisma.client.js");
 const userHelper = {
     isValidEmail: (email) => {
@@ -99,3 +100,10 @@ const userHelper = {
     })
 };
 exports.default = userHelper;
+class UserHelper {
+    constructor() { }
+    static createCode() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+}
+exports.UserHelper = UserHelper;

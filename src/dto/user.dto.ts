@@ -51,4 +51,27 @@ export default class UserDTO {
   }
 
 
+  public static login(data: any) {
+    const { email, password } = data;
+    if (!email || !password)
+      return {
+        error: {
+          message: 'All fields are required: email and password'
+        }
+      }
+    if (!this.checkEmail(email))
+      return {
+        error: {
+          message: 'Invalid email'
+        }
+      }
+
+    return {
+      error: null, value: {
+        email,
+        password
+      }
+    }
+  }
+
 }

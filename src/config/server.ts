@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { PORT, API_VERSION, CORS_ORIGIN } from './environment';
 import { errorHandler } from '../middlewares/error.middleware';
-import PostgreSQL from './postgre.client';
+import PostgrePool from './postgre.pool';
 import { usersRouter, studentsRouter, subjectsRouter, coursesRouter, attendanceRouter, qrRouter, cronRouter } from '../routes';
 
 export default class Server {
@@ -19,7 +19,7 @@ export default class Server {
   }
 
   private async database() {
-    const db = await PostgreSQL.getInstance();
+    const db = await PostgrePool.getInstance();
     /*  if (SYNC_DB === 1) {
         try {
           await db.sync();

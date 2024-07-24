@@ -1,31 +1,31 @@
 import express from 'express';
 import passport from '../middlewares/auth.mid.js';
+import UsersControllerOLD from '../controllers/users.controller.old.js';
 import UsersController from '../controllers/users.controller.js';
-import UserController from '../controllers/users.controller.2.js';
 
 export const usersRouter = express
   .Router() // Path: /api/users
 
   // -- Not protected routes --
-  .get('/confirm/:code', UsersController.confirm)
-  .post('/login', UsersController.login)
-  .post('/register', UserController.register)
-  .post('/forgotpassword', UsersController.forgotPassword)
-  .post('/resetpassword', UsersController.resetPassword)
+  .get('/confirm/:code', UsersControllerOLD.confirm)
+  .post('/login', UsersControllerOLD.login)
+  .post('/register', UsersController.register)
+  .post('/forgotpassword', UsersControllerOLD.forgotPassword)
+  .post('/resetpassword', UsersControllerOLD.resetPassword)
 
   // -- User protected routes --
   .use(passport.authenticate('userJWT', { session: false }))
-  .put('/update', UsersController.update)
+  .put('/update', UsersControllerOLD.update)
 
 // -- Admin protected routes --
 const adminProtectedRoutes = express.Router()
   .use(passport.authenticate('adminJWT', { session: false }))
-  .get('/', UsersController.getUsers)
-  .get('/:user_id', UsersController.getById)
-  .post('/admin/register', UsersController.register)
-  .put('/assignrole/:user_id', UsersController.assignRole)
-  .put('/update/:user_id', UsersController.updateByAdmin)
-  .delete('/delete/:user_id', UsersController.delete)
+  .get('/', UsersControllerOLD.getUsers)
+  .get('/:user_id', UsersControllerOLD.getById)
+  .post('/admin/register', UsersControllerOLD.register)
+  .put('/assignrole/:user_id', UsersControllerOLD.assignRole)
+  .put('/update/:user_id', UsersControllerOLD.updateByAdmin)
+  .delete('/delete/:user_id', UsersControllerOLD.delete)
 usersRouter.use(adminProtectedRoutes)
 
 

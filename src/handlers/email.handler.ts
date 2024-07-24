@@ -1,8 +1,9 @@
 import sgMail from '@sendgrid/mail'
-import { sendgrid_api_key } from "../config/environment.js"
+import { SENDGRID_API_KEY } from "../config/environment.js"
 import { IEmail } from '../types/email.types.js';
+import emailTemplates from '../templates/email.templates.js';
 
-sgMail.setApiKey(sendgrid_api_key)
+sgMail.setApiKey(SENDGRID_API_KEY)
 
 export default async function sendEmail(email: IEmail) {
   try {
@@ -21,6 +22,36 @@ export default async function sendEmail(email: IEmail) {
   }
 }
 
+export class EmailHandler {
+
+  private constructor() { }
+
+  private static async sendEmail(msg: any) {
+    try {
+      const response = await sgMail.send(msg)
+      if (response[0].statusCode !== 202) return { success: false, message: 'Email not sent' }
+      return { success: true, message: 'Email sent.' }
+    } catch (error) {
+      return error
+    }
+  }
+
+  static async sendVerificationEmail(email: string, fullname: string, verificationCode: string): Promise<any> {
+    try {
+      const msg = emailTemplates.confirmEmail(email, fullname, verificationCode)
+      return await this.sendEmail(msg)
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error sending verification email.',
+        error
+      }
+    }
+  }
+
+
+
+}
 
 
 

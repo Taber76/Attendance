@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const environment_1 = require("./environment");
 const error_middleware_1 = require("../middlewares/error.middleware");
-const postgre_client_1 = __importDefault(require("./postgre.client"));
+const postgre_pool_1 = __importDefault(require("./postgre.pool"));
 const routes_1 = require("../routes");
 class Server {
     constructor() {
@@ -29,7 +29,7 @@ class Server {
     }
     database() {
         return __awaiter(this, void 0, void 0, function* () {
-            const db = yield postgre_client_1.default.getInstance();
+            const db = yield postgre_pool_1.default.getInstance();
             /*  if (SYNC_DB === 1) {
                 try {
                   await db.sync();

@@ -93,3 +93,13 @@ const userHelper = {
 }
 
 export default userHelper
+
+
+export class UserHelper {
+  private constructor() { }
+
+  public static createCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+}

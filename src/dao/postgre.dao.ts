@@ -1,16 +1,16 @@
-import PostgreSQL from "../config/postgre.client";
+import PostgrePool from "../config/postgre.pool";
 
 export default class PostgreDAO {
   private static instance: PostgreDAO | null = null;
-  private postgreInstance: PostgreSQL;
+  private postgreInstance: PostgrePool;
 
-  private constructor(postgreInstance: PostgreSQL) {
+  private constructor(postgreInstance: PostgrePool) {
     this.postgreInstance = postgreInstance;
   }
 
   public static async getInstance(): Promise<PostgreDAO> {
     if (!PostgreDAO.instance) {
-      const postgreInstance = await PostgreSQL.getInstance();
+      const postgreInstance = await PostgrePool.getInstance();
       PostgreDAO.instance = new PostgreDAO(postgreInstance);
     }
     return Promise.resolve(PostgreDAO.instance);
@@ -63,7 +63,7 @@ export default class PostgreDAO {
 
       const query = `SELECT ${selectFields} FROM ${table} WHERE ${whereConditions}`;
       const result = await this.executeQuery(query, whereValues);
-      return result;
+      return result.rows;
     } catch (err) {
       throw err;
     }

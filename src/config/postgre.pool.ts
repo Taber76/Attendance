@@ -3,18 +3,18 @@ import { DBASE_URL } from './environment';
 
 const { Pool } = pg;
 
-class PostgreSQL {
-  private static instance: PostgreSQL;
+class PostgrePool {
+  private static instance: PostgrePool;
   private pool: any | null = null;
 
   private constructor() { }
 
-  public static async getInstance(): Promise<PostgreSQL> {
-    if (!PostgreSQL.instance) {
-      PostgreSQL.instance = new PostgreSQL();
-      await PostgreSQL.instance.connect();
+  public static async getInstance(): Promise<PostgrePool> {
+    if (!PostgrePool.instance) {
+      PostgrePool.instance = new PostgrePool();
+      await PostgrePool.instance.connect();
     }
-    return PostgreSQL.instance;
+    return PostgrePool.instance;
   }
 
   private async connect(): Promise<void> {
@@ -66,4 +66,4 @@ class PostgreSQL {
   }
 }
 
-export default PostgreSQL;
+export default PostgrePool;
