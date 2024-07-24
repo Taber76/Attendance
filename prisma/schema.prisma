@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Activation {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("activations")
+}
+
+model Attendance {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  subjectId  Int
+  studentId  Int
+  registered Boolean  @default(false)
+  students   Student  @relation(fields: [studentId], references: [id])
+  subjects   Subject  @relation(fields: [subjectId], references: [id])
+
+  @@map("attendances")
+}
+
+model Course {
+  id        Int       @id @default(autoincrement())
+  level     String
+  number    Int
+  letter    String
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  subjects  Subject[]
+
+  @@map("courses")
+}
+
+model Loginattempts {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  attempts  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@map("loginattempts")
+}
+
+model Nonattendance {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  subjectId Int
+  studentId Int
+  type      Type     @default(UNJUSTIFIED)
+  students  Student  @relation(fields: [studentId], references: [id])
+  subjects  Subject  @relation(fields: [subjectId], references: [id])
+
+  @@map("nonattendances")
+}
+
+model Observations {
+  id          Int      @id @default(autoincrement())
+  studentId   Int
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  students    Student  @relation(fields: [studentId], references: [id])
+
+  @@map("observations")
+}
+
+model Student {
+  id             Int             @id @default(autoincrement())
+  internal_id    String?
+  name           String
+  surname        String
+  password       String?
+  personal_id    String?
+  birthdate      DateTime?
+  contact_email  String?
+  contact_phone  String?
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now())
+  attendances    Attendance[]
+  nonattendances Nonattendance[]
+  observations   Observations[]
+  subjects       Subject[]       @relation("StudentToSubject")
+
+  @@map("students")
+}
+
+model Subject {
+  id             Int             @id @default(autoincrement())
+  name           String
+  teacherId      Int?
+  courseId       Int?
+  schelude       Json[]
+  startSubjet    DateTime?
+  endSubject     DateTime?
+  active         Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime
+  attendances    Attendance[]
+  nonattendances Nonattendance[]
+  courses        Course?         @relation(fields: [courseId], references: [id])
+  users          User?           @relation(fields: [teacherId], references: [id])
+  students       Student[]       @relation("StudentToSubject")
+
+  @@map("subjects")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  fullname  String
+  username  String
+  password  String
+  role      Role      @default(TEACHER)
+  active    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  subjects  Subject[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  USER
+  TEACHER
+}
+
+enum Type {
+  UNJUSTIFIED
+  JUSTIFIED
+  LATE
+  DELETED
+}
