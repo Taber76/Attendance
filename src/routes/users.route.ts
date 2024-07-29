@@ -8,7 +8,7 @@ export const usersRouter = express
 
   // -- Not protected routes --
   .get('/confirm/:code', UsersControllerOLD.confirm)
-  .post('/login', UsersControllerOLD.login)
+  .post('/login', UsersController.login)
   .post('/register', UsersController.register)
   .post('/forgotpassword', UsersControllerOLD.forgotPassword)
   .post('/resetpassword', UsersControllerOLD.resetPassword)
@@ -22,7 +22,7 @@ const adminProtectedRoutes = express.Router()
   .use(passport.authenticate('adminJWT', { session: false }))
   .get('/', UsersControllerOLD.getUsers)
   .get('/:user_id', UsersControllerOLD.getById)
-  .post('/admin/register', UsersControllerOLD.register)
+  .post('/admin/register', UsersController.register)
   .put('/assignrole/:user_id', UsersControllerOLD.assignRole)
   .put('/update/:user_id', UsersControllerOLD.updateByAdmin)
   .delete('/delete/:user_id', UsersControllerOLD.delete)

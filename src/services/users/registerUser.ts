@@ -20,17 +20,18 @@ export async function registerUser(user: UserCreationAttributes) {
     );
     if (!registeredUser) throw new Error("Unable to register user");
 
-    const verificationCode = UserHelper.createCode();
-    MemoryStorage.addVerificationCode(user.email, verificationCode);
-    const emailSent = await EmailHandler.sendVerificationEmail(
-      user.email,
-      user.fullname,
-      verificationCode
-    )
-    if (!emailSent) throw new Error("User registration successful, but unable to send verification email");
+    if (!user.active) {
+      const verificationCode = UserHelper.createCode();
+      MemoryStorage.addVerificationCode(user.email, verificationCode);
+      const emailSent = await EmailHandler.sendVerificationEmail(
+        user.email,
+        user.fullname,
+        verificationCode
+      )
+      if (!emailSent) throw new Error("User registration successful, but unable to send verification email");
+    }
 
-
-    return registeredUser;
+    return { ...registeredUser[0], password: null } as UserAttributes
   } catch (err) {
     throw err;
   }

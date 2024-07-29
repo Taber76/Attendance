@@ -8,7 +8,7 @@ import userHelper from '../helpers/user.helper.js';
 
 import {
   JWT_SECRET,
-  bcrypt_rounds,
+  BCRYPT_ROUNDS as bcrypt_rounds,
   backend_url
 } from '../config/environment.js';
 const passwordSalt = bcrypt.genSaltSync(bcrypt_rounds);

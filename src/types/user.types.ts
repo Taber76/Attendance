@@ -23,3 +23,8 @@ export interface UserCreationAttributes
 export interface UserUpdateAttributes
   extends Omit<UserAttributes, 'created_at' | 'updated_at'> {
 }
+
+export interface UserCredentialsAttributes {
+  email: string;
+  password: string;
+}

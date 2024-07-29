@@ -43,7 +43,7 @@ export default class PostgreDAO {
 
       const query = `INSERT INTO ${table} (${keysString}) VALUES (${placeholdersString}) RETURNING *`;
       const result = await this.executeQuery(query, values);
-      return result
+      return result.rows;
     } catch (err) {
       throw err;
     }
@@ -70,11 +70,11 @@ export default class PostgreDAO {
   }
 
 
-  public async updateTable<T extends Record<string, any>>(table: string, data: T, where: T): Promise<void> {
+  public async updateTable<T extends Record<string, any>>(table: string, update: T, where: T): Promise<T[]> {
     try {
-      const keys = Object.keys(data);
+      const keys = Object.keys(update);
       const keysString = keys.join(', ');
-      const values = Object.values(data);
+      const values = Object.values(update);
       const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
 
       const whereKeys = Object.keys(where);
@@ -84,7 +84,7 @@ export default class PostgreDAO {
 
       const query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString}) WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
       const result = await this.executeQuery(query, [...values, ...whereValues]);
-      return result
+      return result.rows;
     } catch (err) {
       throw err;
     }

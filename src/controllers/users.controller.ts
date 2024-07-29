@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 import HTTP_STATUS from "../constants/httpStatusCodes"
 import UserDTO from "../dto/user.dto";
-import { registerUser, loginUser } from "../services/user";
+import { registerUser, loginUser } from "../services/users";
 
 export default class UsersController {
   private constructor() { }
@@ -15,11 +15,11 @@ export default class UsersController {
       });
     }
     try {
-      const result = await registerUser(value);
+      const userData = await registerUser(value);
       return res.status(HTTP_STATUS.CREATED).json({
-        success: true,
+        result: true,
         message: 'User created successfully. Please check your email to activate your account.',
-        result
+        user: userData
       })
 
     } catch (err) {
@@ -36,11 +36,12 @@ export default class UsersController {
       });
     }
     try {
-      const result = await loginUser(value);
+      const { userData, token } = await loginUser(value);
       return res.status(HTTP_STATUS.OK).json({
-        success: true,
+        result: true,
         message: 'User logged in successfully.',
-        result
+        user: userData,
+        token
       })
     } catch (err) {
       next(err);

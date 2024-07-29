@@ -9,7 +9,7 @@ export const CORS_ORIGIN = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN : '
 
 export const DBASE_URL = process.env.DBASE_URL ? process.env.DBASE_URL : 'postgresql://postgres:postgres@localhost:5432/postgres'
 
-export const bcrypt_rounds = Number(process.env.BCRYPT_ROUNDS)
+export const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS)
 
 export const mail_clientId = process.env.MAIL_CLIENTID
 export const mail_clientSecret = process.env.MAIL_CLIENTSECRET

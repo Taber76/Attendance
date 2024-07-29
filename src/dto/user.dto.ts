@@ -1,6 +1,8 @@
 import * as bcrypt from 'bcrypt';
+import { BCRYPT_ROUNDS } from '../config/environment';
 
 export default class UserDTO {
+  private static salt = bcrypt.genSaltSync(BCRYPT_ROUNDS);
   private constructor() { }
 
   private static checkEmail(email: string) {
@@ -37,7 +39,7 @@ export default class UserDTO {
         }
       }
 
-    const hashPassword = bcrypt.hashSync(password, 10);
+    const hashPassword = bcrypt.hashSync(password, this.salt);
 
     return {
       error: null, value: {
@@ -67,7 +69,8 @@ export default class UserDTO {
       }
 
     return {
-      error: null, value: {
+      error: null,
+      value: {
         email,
         password
       }

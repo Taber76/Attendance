@@ -1,5 +1,8 @@
 import { prisma } from "../config/prisma.client.js";
-
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from "../config/environment.js";
+import { UserAttributes } from "../types/user.types.js";
 
 const userHelper = {
 
@@ -101,5 +104,15 @@ export class UserHelper {
   public static createCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
+
+  public static comparePassword(password: string, savedPassword: string) {
+    return bcrypt.compareSync(password, savedPassword);
+  }
+
+  public static generateToken(user: UserAttributes) {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+    return token;
+  }
+
 
 }
