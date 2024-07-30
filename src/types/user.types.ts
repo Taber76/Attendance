@@ -12,16 +12,16 @@ export interface UserAttributes {
   password: string;
   role: UserRole;
   active: boolean;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface UserCreationAttributes
-  extends Omit<UserAttributes, 'id' | 'role' | 'created_at' | 'updated_at'> {
+  extends Omit<UserAttributes, 'id' | 'role' | 'createdAt' | 'updatedAt'> {
 }
 
 export interface UserUpdateAttributes
-  extends Omit<UserAttributes, 'created_at' | 'updated_at'> {
+  extends Partial<Omit<UserAttributes, 'createdAt' | 'updatedAt'>> {
 }
 
 export interface UserCredentialsAttributes {

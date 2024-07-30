@@ -29,7 +29,7 @@ export default class MemoryStorage {
     }
   }
 
-  public static getVerificationCode(email: string): string {
+  public static getCodeWithEmail(email: string): string {
     const index = MemoryStorage.verificationCodes.findIndex((code) => code.email === email);
     if (index !== -1) {
       if (MemoryStorage.verificationCodes[index].created_at < new Date(Date.now() - 300 * 60 * 1000)) {

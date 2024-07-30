@@ -38,7 +38,7 @@ export class EmailHandler {
 
   static async sendVerificationEmail(email: string, fullname: string, verificationCode: string): Promise<any> {
     try {
-      const msg = emailTemplates.confirmEmail(email, fullname, verificationCode)
+      const msg = await emailTemplates.confirmEmail(email, fullname, verificationCode)
       return await this.sendEmail(msg)
     } catch (error) {
       return {

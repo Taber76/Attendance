@@ -55,7 +55,7 @@ class PostgreDAO {
                 const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
                 const query = `INSERT INTO ${table} (${keysString}) VALUES (${placeholdersString}) RETURNING *`;
                 const result = yield this.executeQuery(query, values);
-                return result;
+                return result.rows;
             }
             catch (err) {
                 throw err;
@@ -78,12 +78,12 @@ class PostgreDAO {
             }
         });
     }
-    updateTable(table, data, where) {
+    updateTable(table, update, where) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const keys = Object.keys(data);
+                const keys = Object.keys(update);
                 const keysString = keys.join(', ');
-                const values = Object.values(data);
+                const values = Object.values(update);
                 const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
                 const whereKeys = Object.keys(where);
                 const whereKeysString = whereKeys.join(', ');
@@ -91,7 +91,7 @@ class PostgreDAO {
                 const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + 1)).join(', ');
                 const query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString}) WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
                 const result = yield this.executeQuery(query, [...values, ...whereValues]);
-                return result;
+                return result.rows;
             }
             catch (err) {
                 throw err;

@@ -19,6 +19,8 @@ export default class PostgreDAO {
 
   private async executeQuery(query: string, values?: any[]): Promise<any> {
     try {
+      //console.log('QUERY: ', query);
+      //console.log('VALUES: ', values);
       const pool = await this.postgreInstance.getPool();
       if (!pool) throw new Error('Database connection error');
       const client = await pool.connect();
@@ -32,7 +34,6 @@ export default class PostgreDAO {
       throw err;
     }
   }
-
 
   public async insertIntoTable<T extends Record<string, any>>(table: string, data: T): Promise<any> {
     try {
@@ -51,17 +52,19 @@ export default class PostgreDAO {
 
   public async getFromTable<T extends Record<string, any>>(
     table: string,
-    where: Partial<T>,
+    where: Partial<T> = {},
     select?: (keyof T)[]
   ): Promise<T[]> {
     try {
-      const selectFields = select && select.length > 0 ? select.join(', ') : '*';
-
+      const selectFields = select && select.length > 0 ? select.map(field => `"${String(field)}"`).join(', ') : '*';
       const whereKeys = Object.keys(where);
-      const whereConditions = whereKeys.map((key, i) => `${key} = $${i + 1}`).join(' AND ');
+      let whereConditions = '';
       const whereValues = Object.values(where);
+      if (whereKeys.length > 0) {
+        whereConditions = 'WHERE ' + whereKeys.map((key, i) => `"${String(key)}" = $${i + 1}`).join(' AND ');
+      }
 
-      const query = `SELECT ${selectFields} FROM ${table} WHERE ${whereConditions}`;
+      const query = `SELECT ${selectFields} FROM ${table} ${whereConditions}`;
       const result = await this.executeQuery(query, whereValues);
       return result.rows;
     } catch (err) {
@@ -69,8 +72,7 @@ export default class PostgreDAO {
     }
   }
 
-
-  public async updateTable<T extends Record<string, any>>(table: string, update: T, where: T): Promise<T[]> {
+  public async updateTable<T extends Record<string, any>>(table: string, update: T, where: Partial<T>): Promise<number> {
     try {
       const keys = Object.keys(update);
       const keysString = keys.join(', ');
@@ -80,11 +82,11 @@ export default class PostgreDAO {
       const whereKeys = Object.keys(where);
       const whereKeysString = whereKeys.join(', ');
       const whereValues = Object.values(where);
-      const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + 1)).join(', ');
+      const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + keys.length + 1)).join(', ');
 
       const query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString}) WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
       const result = await this.executeQuery(query, [...values, ...whereValues]);
-      return result.rows;
+      return result.rowCount
     } catch (err) {
       throw err;
     }

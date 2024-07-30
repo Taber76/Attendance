@@ -4,7 +4,7 @@ const emailTemplates = {
   // Email de confirmacion
   confirmEmail: async (email: string, fullname: string, code: string) => {
     return {
-      from: 'Administrador de Asistencias',
+      from: 'Administrador de Asistencias <sync.ideas.group@gmail.com>',
       to: email,
       subject: 'Confirmar email',
       text: `Para confirmar tu correo electrónico usa el siguiente código: ${code}`,
@@ -53,7 +53,7 @@ const emailTemplates = {
   // Email de recuperación de contraseña
   forgotPassword: async (email: string, code: string) => {
     return {
-      from: 'Administrador de Asistencias',
+      from: 'Administrador de Asistencias <sync.ideas.group@gmail.com>',
       to: email,
       subject: 'Recuperar contraseña',
       text: `Para recuperar tu contraseña usa el siguiente código: ${code}`,

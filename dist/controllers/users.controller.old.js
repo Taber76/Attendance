@@ -42,7 +42,7 @@ const email_handler_js_1 = __importDefault(require("../handlers/email.handler.js
 const email_templates_js_1 = __importDefault(require("../templates/email.templates.js"));
 const user_helper_js_1 = __importDefault(require("../helpers/user.helper.js"));
 const environment_js_1 = require("../config/environment.js");
-const passwordSalt = bcrypt.genSaltSync(environment_js_1.bcrypt_rounds);
+const passwordSalt = bcrypt.genSaltSync(environment_js_1.BCRYPT_ROUNDS);
 var Roles;
 (function (Roles) {
     Roles["ADMIN"] = "ADMIN";

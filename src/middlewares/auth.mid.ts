@@ -2,7 +2,8 @@ import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
 
-import { prisma } from '../config/prisma.client.js';
+import PostgreDAO from "../dao/postgre.dao";
+import { UserAttributes } from "../types";
 import { JWT_SECRET } from '../config/environment.js';
 
 passport.use(
@@ -34,12 +35,13 @@ passport.use(
     },
     async (payload, done) => {
       try {
-        const user = await prisma.user.findUnique({
-          where: {
-            id: payload.id,
-          },
-        });
-        if (!user || user.role !== 'ADMIN') {
+        const postgreDAOInstance = await PostgreDAO.getInstance();
+        const user = await postgreDAOInstance.getFromTable<UserAttributes>(
+          'users',
+          { id: payload.id },
+          ['id', 'role']
+        );
+        if (!user || user[0].role !== 'ADMIN') {
           return done(null, false);
         }
         return done(null, user);

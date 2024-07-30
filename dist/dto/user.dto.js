@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt = __importStar(require("bcrypt"));
+const environment_1 = require("../config/environment");
 class UserDTO {
     constructor() { }
     static checkEmail(email) {
@@ -54,7 +55,7 @@ class UserDTO {
                     message: 'Invalid password, password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character'
                 }
             };
-        const hashPassword = bcrypt.hashSync(password, 10);
+        const hashPassword = bcrypt.hashSync(password, this.salt);
         return {
             error: null, value: {
                 fullname,
@@ -80,11 +81,100 @@ class UserDTO {
                 }
             };
         return {
-            error: null, value: {
+            error: null,
+            value: {
                 email,
                 password
             }
         };
     }
+    static forgotPassword(data) {
+        const { email } = data;
+        if (!email)
+            return {
+                error: {
+                    message: 'All fields are required: email'
+                }
+            };
+        if (!this.checkEmail(email))
+            return {
+                error: {
+                    message: 'Invalid email'
+                }
+            };
+        return {
+            error: null,
+            value: {
+                email
+            }
+        };
+    }
+    static resetPassword(data) {
+        const { email, password, code } = data;
+        if (!email || !password || !code)
+            return {
+                error: {
+                    message: 'All fields are required: email, password and code'
+                }
+            };
+        if (!this.checkEmail(email))
+            return {
+                error: {
+                    message: 'Invalid email'
+                }
+            };
+        if (!this.checkPassword(password))
+            return {
+                error: {
+                    message: 'Invalid password, password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character'
+                }
+            };
+        const hashPassword = bcrypt.hashSync(password, this.salt);
+        return {
+            error: null,
+            value: {
+                email,
+                password: hashPassword,
+                code
+            }
+        };
+    }
+    static updateUser(data, user) {
+        const { fullname, username, email, password } = data;
+        if (!fullname && !username && !email && !password || !user.id)
+            return {
+                error: {
+                    message: 'A least one field is required: fullname, username, email and password'
+                }
+            };
+        if (!this.checkEmail(email))
+            return {
+                error: {
+                    message: 'Invalid email'
+                }
+            };
+        if (!this.checkPassword(password))
+            return {
+                error: {
+                    message: 'Invalid password, password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character'
+                }
+            };
+        const response = {
+            id: user.id,
+        };
+        if (fullname)
+            response.fullname = fullname;
+        if (username)
+            response.username = username;
+        if (email)
+            response.email = email;
+        if (password)
+            response.password = bcrypt.hashSync(password, this.salt);
+        return {
+            error: null,
+            value: response,
+        };
+    }
 }
+UserDTO.salt = bcrypt.genSaltSync(environment_1.BCRYPT_ROUNDS);
 exports.default = UserDTO;

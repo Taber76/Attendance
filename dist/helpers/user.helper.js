@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserHelper = void 0;
 const prisma_client_js_1 = require("../config/prisma.client.js");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userHelper = {
     isValidEmail: (email) => {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -104,6 +109,13 @@ class UserHelper {
     constructor() { }
     static createCode() {
         return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+    static comparePassword(password, savedPassword) {
+        return bcrypt_1.default.compareSync(password, savedPassword);
+    }
+    static generateToken(user) {
+        const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        return token;
     }
 }
 exports.UserHelper = UserHelper;
