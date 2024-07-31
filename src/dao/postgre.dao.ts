@@ -38,7 +38,7 @@ export default class PostgreDAO {
   public async insertIntoTable<T extends Record<string, any>>(table: string, data: T): Promise<any> {
     try {
       const keys = Object.keys(data);
-      const keysString = keys.join(', ');
+      const keysString = keys.map(key => `"${key}"`).join(', ');
       const values = Object.values(data);
       const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
 
@@ -75,7 +75,7 @@ export default class PostgreDAO {
   public async updateTable<T extends Record<string, any>>(table: string, update: T, where: Partial<T>): Promise<number> {
     try {
       const keys = Object.keys(update);
-      const keysString = keys.join(', ');
+      const keysString = keys.map(key => `"${key}"`).join(', ');
       const values = Object.values(update);
       const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
 

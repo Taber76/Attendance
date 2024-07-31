@@ -8,14 +8,15 @@ export interface StudentAttributes {
   birthdate: Date;
   personal_id: string;
   active: boolean;
-  created_at: Date;
-  updated_at: Date;
+  courseId: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface StudentCreationAttributes
-  extends Omit<StudentAttributes, 'id' | 'active' | 'created_at' | 'updated_at'> {
+  extends Omit<StudentAttributes, 'id' | 'active' | 'courseId' | 'created_at' | 'updated_at'> {
 }
 
 export interface StudentUpdateAttributes
-  extends Omit<StudentAttributes, 'active' | 'created_at' | 'updated_at'> {
+  extends Omit<StudentAttributes, 'created_at' | 'updated_at'> {
 }

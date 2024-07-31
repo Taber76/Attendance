@@ -1,297 +1,103 @@
-import { Request, Response } from 'express-serve-static-core';
-import { prisma } from '../config/prisma.client.js';
-import { Student } from '@prisma/client';
-import studentHelper from '../helpers/student.helper.js';
-import xlsx from 'xlsx';
+import { type Request, type Response, type NextFunction } from "express";
+import HTTP_STATUS from "../constants/httpStatusCodes"
+import {
+  getStudents,
+  registerStudent,
+  updateStudent,
+  registerStudentsWithExcel
+} from "../services";
 
-const StudentsController = {
+export default class UsersController {
+  private constructor() { }
 
-  getStudents: async (req: Request, res: Response) => {
+  // -- Register a new Student --
+  public static async register(req: Request, res: Response, next: NextFunction) {
     try {
-      if (req.query.id) {
-        const id = parseInt(req.query.id as string)
-        const student = await prisma.student.findUnique({
-          where: {
-            id: id,
-            active: true
-          }
-        })
-        if (student) {
-          return res.status(200).json({
-            result: true,
-            message: 'Student found',
-            student
-          })
-        }
-        return res.status(404).json({
+      const studentData = await registerStudent(req.body);
+      if (!studentData.result) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
           result: false,
-          message: 'Student not found'
+          message: studentData.message
         })
       }
-      const students = await prisma.student.findMany({
-        where: {
-          active: true
-        }
-      })
-      if (students && students.length > 0) {
-        return res.status(200).json({
-          result: true,
-          message: 'Students found',
-          students
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Students not found'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
-
-  register: async (req: Request, res: Response) => {
-    try {
-      const checkData = await studentHelper.checkData(req.body)
-      if (!checkData.result) {
-        return res.status(400).json({
-          result: false,
-          message: checkData.message
-        })
-      }
-      const { internal_id, name, surname, password, personal_id, birthdate, contact_email, contact_phone, subject_id } = req.body
-
-      const student = await prisma.student.create({
-        data: {
-          name,
-          surname,
-          personal_id: personal_id ? personal_id : null,
-          birthdate: birthdate ? new Date(birthdate) : null,
-          internal_id: internal_id ? internal_id : null,
-          contact_phone: contact_phone ? contact_phone : null,
-          contact_email: contact_email ? contact_email : null,
-        }
-      })
-
-      if (subject_id && student) {
-        await prisma.student.update({
-          where: { id: student.id },
-          data: {
-            subjects: { connect: subject_id }
-          }
-        })
-      }
-
-      if (student) {
-        return res.status(201).json({
-          result: true,
-          message: 'Student created',
-          student
-        })
-      }
-      return res.status(400).json({
-        result: false,
-        message: 'Student not created'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
-
-  excelImport: async (req: Request, res: Response) => {
-    try {
-      if (!req.file || !req.body.name || !req.body.surname) {
-        return res.status(400).json({
-          result: false,
-          message: 'File and column name and surname are required'
-        })
-      }
-
-      const studentsStatus: any = []
-      const students = await studentHelper.registerFromExcel(req.file, { ...req.body })
-
-      const promises = students.map(async (student: Student) => {
-        const checkData = await studentHelper.checkData(student)
-        if (!checkData.result) {
-          studentsStatus.push({ ...student, status: checkData.message })
-        } else {
-          studentsStatus.push({ ...student, status: 'created' })
-          await prisma.student.create({ data: student })
-        }
-        return await prisma.student.create({ data: student })
-      })
-      await Promise.all(promises)
-
-      return res.status(201).json({
+      return res.status(HTTP_STATUS.CREATED).json({
         result: true,
-        message: 'Students created',
-        studentsStatus
+        message: 'Student created',
+        student: studentData.student
       })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
 
-
-  update: async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.student_id as string);
-      if (!id) {
-        return res.status(400).json({
-          result: false,
-          message: 'Id is required',
-        });
-      }
-      const { internal_id, name, surname, password, personal_id, birthdate, contact_email, contact_phone } = req.body
-      const data = {
-        internal_id: internal_id || null,
-        name: name || null,
-        surname: surname || null,
-        password: password || null,
-        personal_id: personal_id || null,
-        birthdate: new Date(birthdate) || null,
-        contact_email: contact_email || null,
-        contact_phone: contact_phone || null
-      }
-      const student = await prisma.student.update({
-        where: { id: id },
-        data
-      })
-      if (student) {
-        return res.status(200).json({
-          result: true,
-          message: 'Student updated',
-          student
-        })
-      }
-
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
-
-  delete: async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.student_id as string);
-      if (!id) {
-        return res.status(400).json({
-          result: false,
-          message: 'Id is required',
-        });
-      }
-      const student = await prisma.student.update({
-        where: {
-          id: id,
-          active: true
-        },
-        data: {
-          active: false,
-          updatedAt: new Date()
-        }
-      })
-      if (student) {
-        return res.status(200).json({
-          result: true,
-          message: 'Student deleted',
-          student
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Student not found'
-      })
-    } catch (error: any) {
-      let message = 'Internal server error'
-      if (error.code === 'P2025') {
-        message = 'Student not found'
-      }
-      res.status(500).json({
-        result: false,
-        message: message
-      })
-    }
-  },
-
-  getDeleted: async (req: Request, res: Response) => {
-    try {
-      const students = await prisma.student.findMany({
-        where: {
-          active: false
-        }
-      })
-      if (students) {
-        return res.status(200).json({
-          result: true,
-          message: 'Students found',
-          students
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Students not found'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
-
-  restore: async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.student_id as string);
-      if (!id) {
-        return res.status(400).json({
-          result: false,
-          message: 'Id is required',
-        });
-      }
-      const student = await prisma.student.update({
-        where: {
-          id: id,
-          active: false
-        },
-        data: {
-          active: true,
-          updatedAt: new Date()
-        }
-      })
-      if (student) {
-        return res.status(200).json({
-          result: true,
-          message: 'Student restored'
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Student not found'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
+    } catch (err) {
+      next(err);
     }
   }
 
+
+  // -- Update a Student --
+  public static async update(req: Request, res: Response, next: NextFunction) {
+    const student_id = parseInt(req.params.student_id as string);
+    try {
+      const result = await updateStudent({ ...req.body, id: student_id });
+      if (result) {
+        return res.status(HTTP_STATUS.OK).json({
+          result: true,
+          message: 'Student updated successfully.'
+        })
+      }
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        result: false,
+        message: 'Student not updated.'
+      })
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
+  // -- Get student/s --
+  public static async getStudents(req: Request, res: Response, next: NextFunction) {
+    try {
+      const studentId = req.params.student_id ? parseInt(req.params.student_id as string) : null;
+      const courseId = req.params.course_id ? parseInt(req.params.course_id as string) : null;
+      const active = studentId === 0 ? false : true;
+      const students = await getStudents(studentId, active, courseId);
+      if (students) {
+        return res.status(HTTP_STATUS.OK).json({
+          result: true,
+          message: 'Students found',
+          students: students
+        })
+      }
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        result: false,
+        message: 'Students not found'
+      })
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  // -- Excel Import --
+  public static async excelImport(req: Request, res: Response, next: NextFunction) {
+    if (!req.file || !req.body.name || !req.body.surname) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        result: false,
+        message: 'Excel file and column name and surname are required'
+      })
+    }
+    try {
+      const students = await registerStudentsWithExcel(req.file, req.body);
+      return res.status(HTTP_STATUS.OK).json({
+        result: true,
+        message: 'Students imported successfully.',
+        students
+      })
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
+
 }
 
-export default StudentsController
+
