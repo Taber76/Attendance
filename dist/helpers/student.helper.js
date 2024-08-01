@@ -75,7 +75,6 @@ const studentHelper = {
             });
             return student;
         });
-        console.log(students);
         return students;
     })
 };

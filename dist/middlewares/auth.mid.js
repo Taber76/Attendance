@@ -16,7 +16,7 @@ exports.generateToken = void 0;
 const passport_1 = __importDefault(require("passport"));
 const passport_jwt_1 = require("passport-jwt");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const prisma_client_js_1 = require("../config/prisma.client.js");
+const postgre_dao_1 = __importDefault(require("../dao/postgre.dao"));
 const environment_js_1 = require("../config/environment.js");
 passport_1.default.use('userJWT', new passport_jwt_1.Strategy({
     jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -37,12 +37,9 @@ passport_1.default.use('adminJWT', new passport_jwt_1.Strategy({
     secretOrKey: environment_js_1.JWT_SECRET,
 }, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield prisma_client_js_1.prisma.user.findUnique({
-            where: {
-                id: payload.id,
-            },
-        });
-        if (!user || user.role !== 'ADMIN') {
+        const postgreDAOInstance = yield postgre_dao_1.default.getInstance();
+        const user = yield postgreDAOInstance.getFromTable('users', { id: payload.id }, ['id', 'role']);
+        if (!user || user[0].role !== 'ADMIN') {
             return done(null, false);
         }
         return done(null, user);

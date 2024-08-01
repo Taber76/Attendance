@@ -29,6 +29,8 @@ class PostgreDAO {
     executeQuery(query, values) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                //console.log('QUERY: ', query);
+                //console.log('VALUES: ', values);
                 const pool = yield this.postgreInstance.getPool();
                 if (!pool)
                     throw new Error('Database connection error');
@@ -50,7 +52,7 @@ class PostgreDAO {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const keys = Object.keys(data);
-                const keysString = keys.join(', ');
+                const keysString = keys.map(key => `"${key}"`).join(', ');
                 const values = Object.values(data);
                 const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
                 const query = `INSERT INTO ${table} (${keysString}) VALUES (${placeholdersString}) RETURNING *`;
@@ -62,14 +64,17 @@ class PostgreDAO {
             }
         });
     }
-    getFromTable(table, where, select) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getFromTable(table_1) {
+        return __awaiter(this, arguments, void 0, function* (table, where = {}, select) {
             try {
-                const selectFields = select && select.length > 0 ? select.join(', ') : '*';
+                const selectFields = select && select.length > 0 ? select.map(field => `"${String(field)}"`).join(', ') : '*';
                 const whereKeys = Object.keys(where);
-                const whereConditions = whereKeys.map((key, i) => `${key} = $${i + 1}`).join(' AND ');
+                let whereConditions = '';
                 const whereValues = Object.values(where);
-                const query = `SELECT ${selectFields} FROM ${table} WHERE ${whereConditions}`;
+                if (whereKeys.length > 0) {
+                    whereConditions = 'WHERE ' + whereKeys.map((key, i) => `"${String(key)}" = $${i + 1}`).join(' AND ');
+                }
+                const query = `SELECT ${selectFields} FROM ${table} ${whereConditions}`;
                 const result = yield this.executeQuery(query, whereValues);
                 return result.rows;
             }
@@ -82,16 +87,16 @@ class PostgreDAO {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const keys = Object.keys(update);
-                const keysString = keys.join(', ');
+                const keysString = keys.map(key => `"${key}"`).join(', ');
                 const values = Object.values(update);
                 const placeholdersString = values.map((_, i) => '$' + (i + 1)).join(', ');
                 const whereKeys = Object.keys(where);
                 const whereKeysString = whereKeys.join(', ');
                 const whereValues = Object.values(where);
-                const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + 1)).join(', ');
+                const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + keys.length + 1)).join(', ');
                 const query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString}) WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
                 const result = yield this.executeQuery(query, [...values, ...whereValues]);
-                return result.rows;
+                return result.rowCount;
             }
             catch (err) {
                 throw err;

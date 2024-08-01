@@ -25,6 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt = __importStar(require("bcrypt"));
 const environment_1 = require("../config/environment");
+const types_1 = require("../types");
 class UserDTO {
     constructor() { }
     static checkEmail(email) {
@@ -32,8 +33,9 @@ class UserDTO {
         return emailRegex.test(email);
     }
     static checkPassword(password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return passwordRegex.test(password);
+        //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        //return passwordRegex.test(password);
+        return password.length >= 8;
     }
     static register(data, user) {
         const { fullname, username, email, password } = data;
@@ -140,27 +142,33 @@ class UserDTO {
         };
     }
     static updateUser(data, user) {
-        const { fullname, username, email, password } = data;
-        if (!fullname && !username && !email && !password || !user.id)
+        const { fullname, username, email, password, role, active } = data;
+        if (!fullname && !username && !email && !password && !role && !active || !user.id)
             return {
                 error: {
                     message: 'A least one field is required: fullname, username, email and password'
                 }
             };
-        if (!this.checkEmail(email))
+        if (email && !this.checkEmail(email))
             return {
                 error: {
                     message: 'Invalid email'
                 }
             };
-        if (!this.checkPassword(password))
+        if (password && !this.checkPassword(password))
             return {
                 error: {
                     message: 'Invalid password, password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character'
                 }
             };
+        if (role && !(role in types_1.UserRole))
+            return {
+                error: {
+                    message: `${role} is not an assignable role`
+                }
+            };
         const response = {
-            id: user.id,
+            id: parseInt(user.id),
         };
         if (fullname)
             response.fullname = fullname;
@@ -170,6 +178,10 @@ class UserDTO {
             response.email = email;
         if (password)
             response.password = bcrypt.hashSync(password, this.salt);
+        if (role)
+            response.role = role;
+        if (active)
+            response.active = active;
         return {
             error: null,
             value: response,

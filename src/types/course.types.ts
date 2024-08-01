@@ -4,14 +4,14 @@ export interface CourseAttributes {
   number: number;
   letter: string;
   active: boolean;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CourseCreationAttributes
-  extends Omit<CourseAttributes, 'id' | 'active' | 'created_at' | 'updated_at'> {
+  extends Omit<CourseAttributes, 'id' | 'active' | 'createdAt' | 'updatedAt'> {
 }
 
 export interface CourseUpdateAttributes
-  extends Omit<CourseAttributes, 'created_at' | 'updated_at'> {
+  extends Omit<CourseAttributes, 'createdAt' | 'updatedAt'> {
 }

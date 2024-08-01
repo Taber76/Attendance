@@ -14,10 +14,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./attendance.route"), exports);
-__exportStar(require("./users.route"), exports);
-__exportStar(require("./courses.route"), exports);
-__exportStar(require("./subjects.route"), exports);
-__exportStar(require("./qr.router"), exports);
-__exportStar(require("./cron.route"), exports);
-__exportStar(require("./students.route"), exports);
+__exportStar(require("./attendance.routes"), exports);
+__exportStar(require("./users.routes"), exports);
+__exportStar(require("./courses.routes"), exports);
+__exportStar(require("./subjects.routes"), exports);
+__exportStar(require("./qr.routes"), exports);
+__exportStar(require("./cron.routes"), exports);
+__exportStar(require("./students.routes"), exports);

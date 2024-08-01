@@ -17,22 +17,42 @@ const user_dto_1 = __importDefault(require("../dto/user.dto"));
 const services_1 = require("../services");
 class UsersController {
     constructor() { }
+    static ok(message, res, data, token) {
+        const response = { result: true, message };
+        if (data)
+            response.data = data;
+        if (token)
+            response.token = token;
+        return res.status(httpStatusCodes_1.default.OK).json(response);
+    }
+    static created(message, data, res) {
+        return res.status(httpStatusCodes_1.default.CREATED).json({
+            result: true,
+            message,
+            data
+        });
+    }
+    static badRequest(message, res) {
+        return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
+            result: false,
+            message
+        });
+    }
+    static notFound(message, res) {
+        return res.status(httpStatusCodes_1.default.NOT_FOUND).json({
+            result: false,
+            message
+        });
+    }
     // -- Register a new user --
     static register(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { error, value } = user_dto_1.default.register(req.body, req.user);
-            if (error) {
-                return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
-                    success: false, message: error.message
-                });
-            }
+            if (error)
+                return this.badRequest(error.message, res);
             try {
                 const userData = yield (0, services_1.registerUser)(value);
-                return res.status(httpStatusCodes_1.default.CREATED).json({
-                    result: true,
-                    message: 'User created successfully. Please check your email to activate your account.',
-                    user: userData
-                });
+                return this.created('User created successfully. Please check your email to activate your account.', userData, res);
             }
             catch (err) {
                 next(err);
@@ -43,19 +63,11 @@ class UsersController {
     static login(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { error, value } = user_dto_1.default.login(req.body);
-            if (error) {
-                return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
-                    success: false, message: error.message
-                });
-            }
+            if (error)
+                return this.badRequest(error.message, res);
             try {
                 const { userData, token } = yield (0, services_1.loginUser)(value);
-                return res.status(httpStatusCodes_1.default.OK).json({
-                    result: true,
-                    message: 'User logged in successfully.',
-                    user: userData,
-                    token
-                });
+                return this.ok('User logged in successfully.', res, userData, token);
             }
             catch (err) {
                 next(err);
@@ -68,16 +80,9 @@ class UsersController {
             const { code } = req.params;
             try {
                 const result = yield (0, services_1.activeUser)(code);
-                if (result) {
-                    return res.status(httpStatusCodes_1.default.OK).json({
-                        result: true,
-                        message: 'User activated successfully.'
-                    });
-                }
-                return res.status(httpStatusCodes_1.default.NOT_FOUND).json({
-                    result: false,
-                    message: 'User not found.'
-                });
+                if (result)
+                    return this.ok('User activated successfully.', res);
+                return this.notFound('User not found.', res);
             }
             catch (err) {
                 next(err);
@@ -88,17 +93,11 @@ class UsersController {
     static forgotPassword(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { error, value } = user_dto_1.default.forgotPassword(req.body);
-            if (error) {
-                return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
-                    success: false, message: error.message
-                });
-            }
+            if (error)
+                return this.badRequest(error.message, res);
             try {
                 yield (0, services_1.forgotPassword)(value);
-                return res.status(httpStatusCodes_1.default.OK).json({
-                    result: true,
-                    message: 'Email sent'
-                });
+                return this.ok('Email sent', res);
             }
             catch (err) {
                 next(err);
@@ -109,23 +108,13 @@ class UsersController {
     static resetPassword(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { error, value } = user_dto_1.default.resetPassword(req.body);
-            if (error) {
-                return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
-                    success: false, message: error.message
-                });
-            }
+            if (error)
+                return this.badRequest(error.message, res);
             try {
                 const result = yield (0, services_1.resetPassword)(value);
-                if (result) {
-                    return res.status(httpStatusCodes_1.default.OK).json({
-                        result: true,
-                        message: 'Password changed successfully.'
-                    });
-                }
-                return res.status(httpStatusCodes_1.default.NOT_FOUND).json({
-                    result: false,
-                    message: 'User not found.'
-                });
+                if (result)
+                    return this.ok('Password changed successfully.', res);
+                return this.notFound('User not found.', res);
             }
             catch (err) {
                 next(err);
@@ -135,24 +124,30 @@ class UsersController {
     // -- Update user --
     static update(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { error, value } = user_dto_1.default.updateUser(req.body, req.user);
-            if (error) {
-                return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
-                    success: false, message: error.message
-                });
-            }
+            const user = req.params.user_id ? { id: req.params.user_id } : req.user;
+            const { error, value } = user_dto_1.default.updateUser(req.body, user);
+            if (error)
+                return this.badRequest(error.message, res);
             try {
                 const result = yield (0, services_1.updateUser)(value);
-                if (result) {
-                    return res.status(httpStatusCodes_1.default.OK).json({
-                        result: true,
-                        message: 'User updated successfully.'
-                    });
-                }
-                return res.status(httpStatusCodes_1.default.NOT_FOUND).json({
-                    result: false,
-                    message: 'User not found.'
-                });
+                if (result)
+                    return this.ok('User updated successfully.', res);
+                return this.notFound('User not found.', res);
+            }
+            catch (err) {
+                next(err);
+            }
+        });
+    }
+    // -- Get user/s --
+    static getUsers(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.params.user_id ? parseInt(req.params.user_id) : null;
+                const users = yield (0, services_1.getUsers)(userId);
+                if (users)
+                    return this.ok('Users found', res, users);
+                return this.notFound('Users not found.', res);
             }
             catch (err) {
                 next(err);

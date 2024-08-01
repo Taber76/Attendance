@@ -12,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = void 0;
+exports.updateStudent = void 0;
 const postgre_dao_1 = __importDefault(require("../../dao/postgre.dao"));
-function updateUser(userData) {
+function updateStudent(studentData) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const postgreDAOInstance = yield postgre_dao_1.default.getInstance();
-            const usersUpdated = yield postgreDAOInstance.updateTable('users', userData, { id: userData.id });
-            if (usersUpdated > 0) {
+            const studentUpdated = yield postgreDAOInstance.updateTable('students', studentData, { id: studentData.id });
+            if (studentUpdated > 0) {
                 return true;
             }
             throw new Error('User not updated');
@@ -29,4 +29,4 @@ function updateUser(userData) {
         }
     });
 }
-exports.updateUser = updateUser;
+exports.updateStudent = updateStudent;

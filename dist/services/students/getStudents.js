@@ -12,21 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = void 0;
+exports.getStudents = void 0;
 const postgre_dao_1 = __importDefault(require("../../dao/postgre.dao"));
-function updateUser(userData) {
+function getStudents(studentId, active, courseId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const postgreDAOInstance = yield postgre_dao_1.default.getInstance();
-            const usersUpdated = yield postgreDAOInstance.updateTable('users', userData, { id: userData.id });
-            if (usersUpdated > 0) {
-                return true;
-            }
-            throw new Error('User not updated');
+            const whereQuery = { active };
+            if (courseId)
+                whereQuery['courseId'] = courseId;
+            const selectQuery = ['id', 'name', 'surname', 'contact_phone', 'contact_email', 'birthdate', 'personal_id', 'active', 'courseId', 'createdAt', 'updatedAt'];
+            if (studentId)
+                whereQuery['id'] = studentId;
+            const result = yield postgreDAOInstance.getFromTable("students", whereQuery, selectQuery);
+            return result;
         }
         catch (err) {
             throw err;
         }
     });
 }
-exports.updateUser = updateUser;
+exports.getStudents = getStudents;

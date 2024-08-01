@@ -12,7 +12,7 @@ export async function activeUser(code: string) {
         { active: true },
         { email: email }
       );
-      if (result.length > 0) {
+      if (result > 0) {
         MemoryStorage.deleteVerificationCode(email);
         return true
       }

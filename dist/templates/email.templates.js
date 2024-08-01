@@ -13,7 +13,7 @@ const emailTemplates = {
     // Email de confirmacion
     confirmEmail: (email, fullname, code) => __awaiter(void 0, void 0, void 0, function* () {
         return {
-            from: 'Administrador de Asistencias',
+            from: 'Administrador de Asistencias <sync.ideas.group@gmail.com>',
             to: email,
             subject: 'Confirmar email',
             text: `Para confirmar tu correo electrónico usa el siguiente código: ${code}`,
@@ -61,7 +61,7 @@ const emailTemplates = {
     // Email de recuperación de contraseña
     forgotPassword: (email, code) => __awaiter(void 0, void 0, void 0, function* () {
         return {
-            from: 'Administrador de Asistencias',
+            from: 'Administrador de Asistencias <sync.ideas.group@gmail.com>',
             to: email,
             subject: 'Recuperar contraseña',
             text: `Para recuperar tu contraseña usa el siguiente código: ${code}`,

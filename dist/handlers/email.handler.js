@@ -55,7 +55,7 @@ class EmailHandler {
     static sendVerificationEmail(email, fullname, verificationCode) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const msg = email_templates_js_1.default.confirmEmail(email, fullname, verificationCode);
+                const msg = yield email_templates_js_1.default.confirmEmail(email, fullname, verificationCode);
                 return yield this.sendEmail(msg);
             }
             catch (error) {

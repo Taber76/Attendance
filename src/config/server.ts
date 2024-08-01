@@ -3,7 +3,10 @@ import cors from 'cors';
 import { PORT, API_VERSION, CORS_ORIGIN } from './environment';
 import { errorHandler } from '../middlewares/error.middleware';
 import PostgrePool from './postgre.pool';
-import { usersRouter, studentsRouter, subjectsRouter, coursesRouter, attendanceRouter, qrRouter, cronRouter } from '../routes';
+import {
+  usersRouter, studentsRouter, subjectsRouter,
+  coursesRouter, attendanceRouter, qrRouter, cronRouter
+} from '../routes';
 
 export default class Server {
   public app: express.Application;

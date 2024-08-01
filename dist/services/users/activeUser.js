@@ -22,7 +22,7 @@ function activeUser(code) {
             if (email) {
                 const postgreDAOInstance = yield postgre_dao_1.default.getInstance();
                 const result = yield postgreDAOInstance.updateTable('users', { active: true }, { email: email });
-                if (result.length > 0) {
+                if (result > 0) {
                     memory_storage_1.default.deleteVerificationCode(email);
                     return true;
                 }

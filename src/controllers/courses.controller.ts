@@ -1,275 +1,81 @@
-import { Request, Response } from "express-serve-static-core";
-import { prisma } from "../config/prisma.client.js";
+import { type Request, type Response, type NextFunction } from "express";
+import HTTP_STATUS from "../constants/httpStatusCodes"
+import {
+  getCourses,
+  registerCourse,
+  updateCourse,
+} from "../services";
 
-const CoursesController = {
+export default class UsersController {
+  private constructor() { }
 
-  getAll: async (req: Request, res: Response) => {
+  private static ok(message: string, res: Response, data?: any, token?: string) {
+    const response: any = { result: true, message }
+    if (data) response.data = data
+    if (token) response.token = token
+    return res.status(HTTP_STATUS.OK).json(response)
+  }
+
+  private static created(message: string, data: any, res: Response) {
+    return res.status(HTTP_STATUS.CREATED).json({
+      result: true,
+      message,
+      data
+    })
+  }
+
+  private static badRequest(message: string, res: Response) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      result: false,
+      message
+    })
+  }
+
+  private static notFound(message: string, res: Response) {
+    return res.status(HTTP_STATUS.NOT_FOUND).json({
+      result: false,
+      message
+    })
+  }
+
+
+
+  // -- Register a new Course --
+  public static async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const courses = await prisma.course.findMany({
-        where: {
-          active: true
-        }
-      });
-      if (courses && courses.length > 0) {
-        return res.status(200).json({
-          result: true,
-          message: 'Courses found',
-          courses
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Courses not found'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
-
-  create: async (req: Request, res: Response) => {
-    try {
-      const { level, number, letter } = req.body;
-      if (!level || !number || !letter) {
-        return res.status(400).json({ message: "Fields level, number and letter is required" });
-      }
-      let course = await prisma.course.findFirst({
-        where: {
-          level,
-          number,
-          letter
-        },
-      });
-      if (course) {
-        return res.status(400).json({
-          result: false,
-          message: "Course already exists",
-        });
-      }
-      course = await prisma.course.create({
-        data: {
-          level,
-          number,
-          letter,
-          updatedAt: new Date(),
-        },
-      });
-      if (course) {
-        return res.status(201).json({
-          result: true,
-          message: "Course created",
-          course,
-        });
-      }
-      return res.status(400).json({
-        result: false,
-        message: "Course not created",
-      });
-    } catch (error: any) {
-      console.log(error);
-      res.status(500).json({
-        result: false,
-        message: "Internal server error",
-      });
-    }
-  },
-
-  update: async (req: Request, res: Response) => {
-    const id = parseInt(req.params.course_id as string);
-    if (!id) {
-      return res.status(400).json({
-        result: false,
-        message: 'Id is required',
-      });
-    }
-    const { level, number, letter } = req.body;
-    if (!level || !number || !letter) {
-      return res.status(400).json({
-        result: false,
-        message: 'All fields are required',
-      });
-    }
-    try {
-      const course = await prisma.course.update({
-        where: {
-          id: id,
-          active: true,
-        },
-        data: {
-          level,
-          number,
-          letter,
-          updatedAt: new Date()
-        },
-      });
-      if (course) {
-        return res.status(200).json({
-          result: true,
-          message: 'Course updated successfully',
-          course,
-        });
-      }
-    } catch (error: any) {
-      let message = 'Internal server error'
-      if (error.code === 'P2025') {
-        message = 'Course not found'
-      }
-      res.status(500).json({
-        result: false,
-        message: message
-      })
-    }
-  },
-
-  addSubjects: async (req: Request, res: Response) => {
-    const id = parseInt(req.params.course_id as string);
-    if (!id) {
-      return res.status(400).json({
-        result: false,
-        message: 'Id is required',
-      })
-    }
-    const { subjects } = req.body;
-    if (!subjects) {
-      return res.status(400).json({
-        result: false,
-        message: 'Must send subjects',
-      })
-    }
-    try {
-      subjects.forEach(async (subjectId: number) => {
-        try {
-          await prisma.subject.update({
-            where: {
-              id: subjectId
-            },
-            data: {
-              courseId: id
-            }
-          })
-        } catch (error: any) {
-          if (error.code === 'P2025' || error.code === 'P2003') {
-            console.log(`Subject with id ${subjectId} or course with id ${id} not found`);
-          } else {
-            throw error;
-          }
-        }
-      })
-      return res.status(200).json({
-        result: true,
-        message: 'Subjects added successfully',
-      })
-    } catch (error: any) {
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error',
-      })
-    }
-  },
-
-  delete: async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.course_id as string);
-      if (!id) {
-        return res.status(400).json({
-          result: false,
-          message: 'Id is required',
-        });
-      }
-      const course = await prisma.course.update({
-        where: {
-          id,
-          active: true,
-        },
-        data: {
-          active: false,
-          updatedAt: new Date()
-        }
-      });
-      if (course) {
-        return res.status(200).json({
-          result: true,
-          message: "Course deleted",
-          course,
-        });
-      }
-    } catch (error: any) {
-      console.log(error);
-      res.status(500).json({
-        result: false,
-        message: "Internal server error",
-      });
-    }
-  },
-
-  getDeleted: async (req: Request, res: Response) => {
-    try {
-      const courses = await prisma.course.findMany({
-        where: {
-          active: false
-        }
-      });
-      if (courses && courses.length > 0) {
-        return res.status(200).json({
-          result: true,
-          message: 'Courses found',
-          courses
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Courses not found'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
-    }
-  },
-
-  restore: async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.course_id as string);
-      if (!id) {
-        return res.status(400).json({
-          result: false,
-          message: 'Id is required',
-        });
-      }
-      const course = await prisma.course.update({
-        where: {
-          id: id,
-          active: false
-        },
-        data: {
-          active: true,
-          updatedAt: new Date()
-        }
-      });
-      if (course) {
-        return res.status(200).json({
-          result: true,
-          message: 'Course restored'
-        })
-      }
-      return res.status(404).json({
-        result: false,
-        message: 'Course not found'
-      })
-    } catch (error: any) {
-      console.log(error)
-      res.status(500).json({
-        result: false,
-        message: 'Internal server error'
-      })
+      const courseData = await registerCourse(req.body);
+      if (!courseData.result) return this.badRequest(courseData.message, res)
+      return this.created('Course created', courseData.course, res)
+    } catch (err) {
+      next(err);
     }
   }
 
-};
+  // -- Update a Student --
+  public static async update(req: Request, res: Response, next: NextFunction) {
+    const course_id = parseInt(req.params.course_id as string);
+    try {
+      const result = await updateCourse({ ...req.body, id: course_id });
+      if (!result) return this.notFound('Course not updated.', res)
+      return this.ok('Course updated successfully.', res)
+    } catch (err) {
+      next(err);
+    }
+  }
 
-export default CoursesController;
+  // -- Get course/s --
+  public static async getCourses(req: Request, res: Response, next: NextFunction) {
+    try {
+      const courseId = req.params.course_id ? parseInt(req.params.course_id as string) : null;
+      const active = courseId === 0 ? false : true;
+      const courses = await getCourses(courseId, active);
+      if (!courses) return this.notFound('Courses not found', res)
+      return this.ok('Courses found', res, courses)
+    } catch (err) {
+      next(err);
+    }
+  }
+
+}
+
+
