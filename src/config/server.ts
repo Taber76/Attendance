@@ -1,5 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import hpp from 'hpp';
+
 import { PORT, API_VERSION, CORS_ORIGIN } from './environment';
 import { errorHandler } from '../middlewares/error.middleware';
 import PostgrePool from './postgre.pool';
@@ -35,6 +39,9 @@ export default class Server {
   }
 
   private middlewares() {
+    this.app.use(helmet())
+    this.app.use(hpp())
+    this.app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false }));
     this.app.use(cors({ origin: CORS_ORIGIN }));
     this.app.use(express.json());
   }

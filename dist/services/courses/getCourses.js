@@ -19,8 +19,6 @@ function getCourses(courseId, active) {
         try {
             const postgreDAOInstance = yield postgre_dao_1.default.getInstance();
             const whereQuery = { active };
-            if (courseId)
-                whereQuery['courseId'] = courseId;
             const selectQuery = ['id', 'level', 'number', 'letter', 'active', 'createdAt', 'updatedAt'];
             if (courseId)
                 whereQuery['id'] = courseId;

@@ -14,6 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const helmet_1 = __importDefault(require("helmet"));
+const hpp_1 = __importDefault(require("hpp"));
 const environment_1 = require("./environment");
 const error_middleware_1 = require("../middlewares/error.middleware");
 const postgre_pool_1 = __importDefault(require("./postgre.pool"));
@@ -42,6 +45,9 @@ class Server {
         });
     }
     middlewares() {
+        this.app.use((0, helmet_1.default)());
+        this.app.use((0, hpp_1.default)());
+        this.app.use((0, express_rate_limit_1.default)({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false }));
         this.app.use((0, cors_1.default)({ origin: environment_1.CORS_ORIGIN }));
         this.app.use(express_1.default.json());
     }

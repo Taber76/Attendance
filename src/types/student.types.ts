@@ -18,5 +18,5 @@ export interface StudentCreationAttributes
 }
 
 export interface StudentUpdateAttributes
-  extends Omit<StudentAttributes, 'created_at' | 'updated_at'> {
+  extends Partial<Omit<StudentAttributes, 'created_at' | 'updated_at'>> {
 }
