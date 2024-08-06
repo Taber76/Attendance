@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
-import ControllerHandler from "../handlers/controllers.handler";
-import UserDTO from "../dto/user.dto";
+
+import ControllerHandler from "../handlers/controllers.handler.js";
+import UserDTO from "../dto/user.dto.js";
 import {
   registerUser,
   loginUser,
@@ -9,7 +10,7 @@ import {
   resetPassword,
   updateUser,
   getUsers,
-} from "../services";
+} from "../services/index.js";
 
 export default class UsersController {
   private constructor() { }

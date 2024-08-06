@@ -4,13 +4,13 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import hpp from 'hpp';
 
-import { PORT, API_VERSION, CORS_ORIGIN } from './environment';
-import { errorHandler } from '../middlewares/error.middleware';
-import PostgrePool from './postgre.pool';
+import { PORT, API_VERSION, CORS_ORIGIN } from './environment.js';
+import { errorHandler } from '../middlewares/error.middleware.js';
+import PostgrePool from './postgre.pool.js';
 import {
   usersRouter, studentsRouter, subjectsRouter,
   coursesRouter, attendanceRouter, qrRouter, cronRouter
-} from '../routes';
+} from '../routes/index.js';
 
 export default class Server {
   public app: express.Application;

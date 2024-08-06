@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class MemoryStorage {
     constructor() { }
     static addLoginAttempt(email) {
@@ -68,4 +66,4 @@ class MemoryStorage {
 }
 MemoryStorage.loginAttempts = [];
 MemoryStorage.verificationCodes = [];
-exports.default = MemoryStorage;
+export default MemoryStorage;

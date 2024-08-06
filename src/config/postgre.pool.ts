@@ -1,5 +1,6 @@
 import pg from 'pg';
-import { DBASE_URL } from './environment';
+
+import { DBASE_URL } from './environment.js';
 
 const { Pool } = pg;
 

@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,22 +7,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
-const helmet_1 = __importDefault(require("helmet"));
-const hpp_1 = __importDefault(require("hpp"));
-const environment_1 = require("./environment");
-const error_middleware_1 = require("../middlewares/error.middleware");
-const postgre_pool_1 = __importDefault(require("./postgre.pool"));
-const routes_1 = require("../routes");
-class Server {
+import express from 'express';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import { PORT, API_VERSION, CORS_ORIGIN } from './environment.js';
+import { errorHandler } from '../middlewares/error.middleware.js';
+import PostgrePool from './postgre.pool.js';
+import { usersRouter, studentsRouter, subjectsRouter, coursesRouter, attendanceRouter, qrRouter, cronRouter } from '../routes/index.js';
+export default class Server {
     constructor() {
-        this.app = (0, express_1.default)();
+        this.app = express();
         this.database();
         this.middlewares();
         this.routes();
@@ -32,7 +27,7 @@ class Server {
     }
     database() {
         return __awaiter(this, void 0, void 0, function* () {
-            const db = yield postgre_pool_1.default.getInstance();
+            const db = yield PostgrePool.getInstance();
             /*  if (SYNC_DB === 1) {
                 try {
                   await db.sync();
@@ -45,31 +40,30 @@ class Server {
         });
     }
     middlewares() {
-        this.app.use((0, helmet_1.default)());
-        this.app.use((0, hpp_1.default)());
-        this.app.use((0, express_rate_limit_1.default)({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false }));
-        this.app.use((0, cors_1.default)({ origin: environment_1.CORS_ORIGIN }));
-        this.app.use(express_1.default.json());
+        this.app.use(helmet());
+        this.app.use(hpp());
+        this.app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false }));
+        this.app.use(cors({ origin: CORS_ORIGIN }));
+        this.app.use(express.json());
     }
     routes() {
-        this.app.use(`/${environment_1.API_VERSION}/users`, routes_1.usersRouter);
-        this.app.use(`/${environment_1.API_VERSION}/students`, routes_1.studentsRouter);
-        this.app.use(`/${environment_1.API_VERSION}/subjects`, routes_1.subjectsRouter);
-        this.app.use(`/${environment_1.API_VERSION}/courses`, routes_1.coursesRouter);
-        this.app.use(`/${environment_1.API_VERSION}/attendance`, routes_1.attendanceRouter);
-        this.app.use(`/${environment_1.API_VERSION}/qr`, routes_1.qrRouter);
-        this.app.use(`/${environment_1.API_VERSION}/cron`, routes_1.cronRouter);
+        this.app.use(`/${API_VERSION}/users`, usersRouter);
+        this.app.use(`/${API_VERSION}/students`, studentsRouter);
+        this.app.use(`/${API_VERSION}/subjects`, subjectsRouter);
+        this.app.use(`/${API_VERSION}/courses`, coursesRouter);
+        this.app.use(`/${API_VERSION}/attendance`, attendanceRouter);
+        this.app.use(`/${API_VERSION}/qr`, qrRouter);
+        this.app.use(`/${API_VERSION}/cron`, cronRouter);
     }
     errorHandler() {
-        this.app.use(error_middleware_1.errorHandler);
+        this.app.use(errorHandler);
     }
     listen() {
-        this.server = this.app.listen(environment_1.PORT, () => {
-            console.log(`Server running on port ${environment_1.PORT}`);
+        this.server = this.app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
         });
     }
     close() {
         this.server.close();
     }
 }
-exports.default = Server;

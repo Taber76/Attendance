@@ -1,5 +1,5 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { StudentCreationAttributes } from "../../types";
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { StudentCreationAttributes } from "../../types/index.js";
 
 
 export async function registerStudent(student: StudentCreationAttributes) {

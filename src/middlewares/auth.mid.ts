@@ -2,8 +2,8 @@ import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
 
-import PostgreDAO from "../dao/postgre.dao";
-import { UserAttributes } from "../types";
+import PostgreDAO from "../dao/postgre.dao.js";
+import { UserAttributes } from "../types/index.js";
 import { JWT_SECRET } from '../config/environment.js';
 
 passport.use(

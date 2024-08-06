@@ -1,31 +1,6 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt = __importStar(require("bcrypt"));
-const environment_1 = require("../config/environment");
-const types_1 = require("../types");
+import * as bcrypt from 'bcrypt';
+import { BCRYPT_ROUNDS } from '../config/environment.js';
+import { UserRole } from '../types/index.js';
 class UserDTO {
     constructor() { }
     static checkEmail(email) {
@@ -161,7 +136,7 @@ class UserDTO {
                     message: 'Invalid password, password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character'
                 }
             };
-        if (role && !(role in types_1.UserRole))
+        if (role && !(role in UserRole))
             return {
                 error: {
                     message: `${role} is not an assignable role`
@@ -169,6 +144,7 @@ class UserDTO {
             };
         const response = {
             id: parseInt(user.id),
+            updatedAt: new Date()
         };
         if (fullname)
             response.fullname = fullname;
@@ -188,5 +164,5 @@ class UserDTO {
         };
     }
 }
-UserDTO.salt = bcrypt.genSaltSync(environment_1.BCRYPT_ROUNDS);
-exports.default = UserDTO;
+UserDTO.salt = bcrypt.genSaltSync(BCRYPT_ROUNDS);
+export default UserDTO;

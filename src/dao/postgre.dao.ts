@@ -1,4 +1,4 @@
-import PostgrePool from "../config/postgre.pool";
+import PostgrePool from "../config/postgre.pool.js";
 
 export default class PostgreDAO {
   private static instance: PostgreDAO | null = null;

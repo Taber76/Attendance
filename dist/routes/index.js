@@ -1,23 +1,7 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./attendance.routes"), exports);
-__exportStar(require("./users.routes"), exports);
-__exportStar(require("./courses.routes"), exports);
-__exportStar(require("./subjects.routes"), exports);
-__exportStar(require("./qr.routes"), exports);
-__exportStar(require("./cron.routes"), exports);
-__exportStar(require("./students.routes"), exports);
+export * from './attendance.routes.js';
+export * from './users.routes.js';
+export * from './courses.routes.js';
+export * from './subjects.routes.js';
+export * from './qr.routes.js';
+export * from './cron.routes.js';
+export * from './students.routes.js';

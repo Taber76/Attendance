@@ -1,5 +1,6 @@
 import { type Response } from "express";
-import HTTP_STATUS from "../constants/httpStatusCodes"
+
+import HTTP_STATUS from "../constants/httpStatusCodes.js";
 
 export default class ControllerHandler {
   private constructor() { }

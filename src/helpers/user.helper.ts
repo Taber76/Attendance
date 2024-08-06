@@ -1,7 +1,7 @@
 import { prisma } from "../config/prisma.client.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from "../config/environment.js";
+
 import { UserAttributes } from "../types/user.types.js";
 
 const userHelper = {

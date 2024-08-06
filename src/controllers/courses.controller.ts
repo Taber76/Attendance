@@ -1,10 +1,11 @@
 import { type Request, type Response, type NextFunction } from "express";
-import ControllerHandler from "../handlers/controllers.handler";
+
+import ControllerHandler from "../handlers/controllers.handler.js";
 import {
   getCourses,
   registerCourse,
   updateCourse,
-} from "../services";
+} from "../services/index.js";
 
 export default class CoursesController {
   private constructor() { }

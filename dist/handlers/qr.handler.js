@@ -1,27 +1,3 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -31,9 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const pdf_lib_1 = require("pdf-lib");
-const QRCode = __importStar(require("qrcode"));
+import { PDFDocument, rgb } from 'pdf-lib';
+import * as QRCode from 'qrcode';
 const QrHandler = {
     create(data, pageSizeMm, qrSizeMm, marginMm) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -45,7 +20,7 @@ const QrHandler = {
             const verticalStudents = Math.floor(pageSize.height / (qrSize.height + margin));
             const studentsPerPage = horizontalStudents * verticalStudents;
             const totalPages = Math.ceil(data.length / studentsPerPage);
-            const pdfDoc = yield pdf_lib_1.PDFDocument.create();
+            const pdfDoc = yield PDFDocument.create();
             for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
                 const page = pdfDoc.addPage([pageSize.width, pageSize.height]);
                 for (let i = pageIdx * studentsPerPage; i < Math.min((pageIdx + 1) * studentsPerPage, data.length); i++) {
@@ -65,7 +40,7 @@ const QrHandler = {
                         y: (margin + row * (qrSize.height + margin)),
                         width: qrSize.width,
                         height: qrSize.height,
-                        borderColor: (0, pdf_lib_1.rgb)(0, 0, 0),
+                        borderColor: rgb(0, 0, 0),
                         borderWidth: 1
                     });
                     page.drawText(data[i].name + ' ' + data[i].surname, {
@@ -86,4 +61,4 @@ const QrHandler = {
         });
     }
 };
-exports.default = QrHandler;
+export default QrHandler;

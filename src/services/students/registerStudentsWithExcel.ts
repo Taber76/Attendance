@@ -1,5 +1,5 @@
-import { StudentCreationAttributes } from "../../types";
-import { registerStudent } from "./registerStudent";
+import { StudentCreationAttributes } from "../../types/index.js";
+import { registerStudent } from "./registerStudent.js";
 import studentHelper from '../../helpers/student.helper.js';
 
 export async function registerStudentsWithExcel(excelFile: any, dictionary: any) {

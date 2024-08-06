@@ -2,7 +2,7 @@
   "name": "attendance-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon --exec npx tsx src/app.ts",

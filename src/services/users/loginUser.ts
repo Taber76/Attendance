@@ -1,7 +1,7 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { UserAttributes, UserCredentialsAttributes } from "../../types";
-import { UserHelper } from "../../helpers/user.helper";
-import MemoryStorage from "../../storage/memory.storage";
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { UserAttributes, UserCredentialsAttributes } from "../../types/index.js";
+import { UserHelper } from "../../helpers/user.helper.js";
+import MemoryStorage from "../../storage/memory.storage.js";
 
 export async function loginUser(user: UserCredentialsAttributes) {
   try {

@@ -1,8 +1,8 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { UserAttributes, UserCreationAttributes } from "../../types";
-import { EmailHandler } from "../../handlers/email.handler";
-import { UserHelper } from "../../helpers/user.helper";
-import MemoryStorage from "../../storage/memory.storage";
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { UserAttributes, UserCreationAttributes } from "../../types/index.js";
+import { EmailHandler } from "../../handlers/email.handler.js";
+import { UserHelper } from "../../helpers/user.helper.js";
+import MemoryStorage from "../../storage/memory.storage.js";
 
 export async function registerUser(user: UserCreationAttributes) {
   try {

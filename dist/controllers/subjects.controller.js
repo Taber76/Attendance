@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,8 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_client_js_1 = require("../config/prisma.client.js");
+import { prisma } from '../config/prisma.client.js';
 const SubjectsController = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -23,7 +21,7 @@ const SubjectsController = {
                 });
             }
             else {
-                const subject = yield prisma_client_js_1.prisma.subject.findFirst({
+                const subject = yield prisma.subject.findFirst({
                     where: {
                         name,
                         courseId,
@@ -53,7 +51,7 @@ const SubjectsController = {
                     }))
                 };
             }
-            const subject = yield prisma_client_js_1.prisma.subject.create({
+            const subject = yield prisma.subject.create({
                 data: subjectData,
             });
             return res.status(201).json({
@@ -96,7 +94,7 @@ const SubjectsController = {
             if (students !== undefined)
                 data.students = { set: students.map((studentId) => ({ id: studentId })) };
             // Actualizar el subject
-            const subject = yield prisma_client_js_1.prisma.subject.update({
+            const subject = yield prisma.subject.update({
                 where: {
                     id: id,
                 },
@@ -127,7 +125,7 @@ const SubjectsController = {
         }
         try {
             students.forEach((studentId) => __awaiter(void 0, void 0, void 0, function* () {
-                yield prisma_client_js_1.prisma.subject.update({
+                yield prisma.subject.update({
                     where: {
                         id: subjectId
                     },
@@ -155,7 +153,7 @@ const SubjectsController = {
     delete: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const id = parseInt(req.params.subject_id);
-            const subject = yield prisma_client_js_1.prisma.subject.update({
+            const subject = yield prisma.subject.update({
                 where: {
                     id: id,
                     active: true,
@@ -185,7 +183,7 @@ const SubjectsController = {
         const courseId = parseInt(req.query.courseId);
         try {
             if (courseId) {
-                const subjects = yield prisma_client_js_1.prisma.subject.findMany({
+                const subjects = yield prisma.subject.findMany({
                     where: {
                         active: true,
                         courseId,
@@ -206,7 +204,7 @@ const SubjectsController = {
                 }
             }
             else {
-                const subjects = yield prisma_client_js_1.prisma.subject.findMany({
+                const subjects = yield prisma.subject.findMany({
                     where: {
                         active: true,
                     },
@@ -234,4 +232,4 @@ const SubjectsController = {
         }
     }),
 };
-exports.default = SubjectsController;
+export default SubjectsController;

@@ -1,4 +1,4 @@
-import { LoginAttempts, VerificationCode } from "../types/memorystorage.types";
+import { LoginAttempts, VerificationCode } from "../types/memorystorage.types.js";
 
 export default class MemoryStorage {
   private static loginAttempts: LoginAttempts[] = [];

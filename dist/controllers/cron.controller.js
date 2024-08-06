@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,8 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_client_js_1 = require("../config/prisma.client.js");
+import { prisma } from '../config/prisma.client.js';
 const CronController = {
     updateAttendance: (_, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('Cron running');
@@ -26,10 +24,10 @@ const CronController = {
             message: 'Cron running',
         });
         // Obtener estudiantes inactivos
-        const inactiveStudents = yield prisma_client_js_1.prisma.student.findMany({ select: { id: true }, where: { active: false } });
+        const inactiveStudents = yield prisma.student.findMany({ select: { id: true }, where: { active: false } });
         // Registrar asistencias de estudiantes inactivos
         const idsToUpdate = inactiveStudents.map(student => student.id);
-        yield prisma_client_js_1.prisma.attendance.updateMany({
+        yield prisma.attendance.updateMany({
             where: {
                 "studentId": {
                     in: idsToUpdate
@@ -41,9 +39,9 @@ const CronController = {
             }
         });
         // Obtener todos los id de estudiantes
-        const students = yield prisma_client_js_1.prisma.student.findMany({ select: { id: true }, where: { active: true } });
+        const students = yield prisma.student.findMany({ select: { id: true }, where: { active: true } });
         // Obtener todas las fechas con registro de asistencias no registradas
-        const dates = yield prisma_client_js_1.prisma.$queryRaw `
+        const dates = yield prisma.$queryRaw `
       SELECT
         DATE(date) AS day
       FROM attendances
@@ -53,7 +51,7 @@ const CronController = {
         // Verificar asistencias de las fechas con registro para todos los estudiantes
         for (const date of dates) {
             for (const student of students) { // Estudiantes activos
-                const attendance = yield prisma_client_js_1.prisma.$queryRaw `
+                const attendance = yield prisma.$queryRaw `
           SELECT
             *
           FROM attendances
@@ -63,7 +61,7 @@ const CronController = {
             registered = false
         `;
                 if (attendance.length < 1) { // No hay asistencia registrada
-                    yield prisma_client_js_1.prisma.nonattendance.create({
+                    yield prisma.nonattendance.create({
                         data: {
                             date: new Date(date.day),
                             subjectId: 67,
@@ -74,7 +72,7 @@ const CronController = {
                 if (attendance.length > 0) {
                     // Borrar registros de asistencia duplicados
                     const idsToDelete = attendance.slice(1).map(attendance => attendance.id);
-                    yield prisma_client_js_1.prisma.attendance.deleteMany({
+                    yield prisma.attendance.deleteMany({
                         where: {
                             id: {
                                 in: idsToDelete
@@ -82,7 +80,7 @@ const CronController = {
                         }
                     });
                     // actualizar asistencia registrada
-                    yield prisma_client_js_1.prisma.attendance.updateMany({
+                    yield prisma.attendance.updateMany({
                         where: {
                             id: attendance[0].id
                         },
@@ -95,4 +93,4 @@ const CronController = {
         }
     })
 };
-exports.default = CronController;
+export default CronController;

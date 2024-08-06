@@ -1,6 +1,6 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { UserAttributes } from "../../types";
-import MemoryStorage from "../../storage/memory.storage";
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { UserAttributes } from "../../types/index.js";
+import MemoryStorage from "../../storage/memory.storage.js";
 
 export async function resetPassword(user: { email: string, password: string, code: string }) {
   try {

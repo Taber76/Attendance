@@ -1,22 +1,16 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.studentsRouter = void 0;
-const express_1 = __importDefault(require("express"));
-const multer_1 = __importDefault(require("multer"));
-const auth_mid_js_1 = __importDefault(require("../middlewares/auth.mid.js"));
-const students_controller_js_1 = __importDefault(require("../controllers/students.controller.js"));
-exports.studentsRouter = express_1.default
+import express from 'express';
+import multer from 'multer';
+import passport from '../middlewares/auth.mid.js';
+import StudentsController from '../controllers/students.controller.js';
+export const studentsRouter = express
     .Router() // Path: /api/students
     // -- Middlewares --
-    .use(auth_mid_js_1.default.authenticate('userJWT', { session: false }))
+    .use(passport.authenticate('userJWT', { session: false }))
     // -- Routes --
-    .get('/', students_controller_js_1.default.getStudents)
-    .get('/:student_id', students_controller_js_1.default.getStudents) // if student_id 0 => get all deleted
-    .get('/course/:course_id', students_controller_js_1.default.getStudents)
-    .post('/register', students_controller_js_1.default.register)
-    .post('/excel-import', (0, multer_1.default)().single('file'), students_controller_js_1.default.excelImport)
-    .put('/update/:student_id', students_controller_js_1.default.update)
-    .put('/update-many', students_controller_js_1.default.updateMany); // Only courseId in body { studentIds: [1,2,3,...], courseId: 4 }
+    .get('/', StudentsController.getStudents)
+    .get('/:student_id', StudentsController.getStudents) // if student_id 0 => get all deleted
+    .get('/course/:course_id', StudentsController.getStudents)
+    .post('/register', StudentsController.register)
+    .post('/excel-import', multer().single('file'), StudentsController.excelImport)
+    .put('/update/:student_id', StudentsController.update)
+    .put('/update-many', StudentsController.updateMany); // Only courseId in body { studentIds: [1,2,3,...], courseId: 4 }

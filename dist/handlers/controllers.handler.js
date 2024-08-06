@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const httpStatusCodes_1 = __importDefault(require("../constants/httpStatusCodes"));
-class ControllerHandler {
+import HTTP_STATUS from "../constants/httpStatusCodes.js";
+export default class ControllerHandler {
     constructor() { }
     static ok(message, res, data, token) {
         const response = { result: true, message };
@@ -12,26 +7,25 @@ class ControllerHandler {
             response.data = data;
         if (token)
             response.token = token;
-        return res.status(httpStatusCodes_1.default.OK).json(response);
+        return res.status(HTTP_STATUS.OK).json(response);
     }
     static created(message, data, res) {
-        return res.status(httpStatusCodes_1.default.CREATED).json({
+        return res.status(HTTP_STATUS.CREATED).json({
             result: true,
             message,
             data
         });
     }
     static badRequest(message, res) {
-        return res.status(httpStatusCodes_1.default.BAD_REQUEST).json({
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
             result: false,
             message
         });
     }
     static notFound(message, res) {
-        return res.status(httpStatusCodes_1.default.NOT_FOUND).json({
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
             result: false,
             message
         });
     }
 }
-exports.default = ControllerHandler;

@@ -1,4 +1,5 @@
 import express from 'express';
+
 import QRController from '../controllers/qr.controller.js';
 
 export const qrRouter = express

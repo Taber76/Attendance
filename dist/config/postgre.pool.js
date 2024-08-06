@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const pg_1 = __importDefault(require("pg"));
-const environment_1 = require("./environment");
-const { Pool } = pg_1.default;
+import pg from 'pg';
+import { DBASE_URL } from './environment.js';
+const { Pool } = pg;
 class PostgrePool {
     constructor() {
         this.pool = null;
@@ -32,7 +27,7 @@ class PostgrePool {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 this.pool = new Pool({
-                    connectionString: environment_1.DBASE_URL,
+                    connectionString: DBASE_URL,
                     ssl: { rejectUnauthorized: false },
                     min: 1,
                     max: 10,
@@ -83,4 +78,4 @@ class PostgrePool {
         });
     }
 }
-exports.default = PostgrePool;
+export default PostgrePool;

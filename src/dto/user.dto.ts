@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import { BCRYPT_ROUNDS } from '../config/environment';
-import { UserRole } from '../types';
+
+import { BCRYPT_ROUNDS } from '../config/environment.js';
+import { UserRole } from '../types/index.js';
 
 export default class UserDTO {
   private static salt = bcrypt.genSaltSync(BCRYPT_ROUNDS);

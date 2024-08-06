@@ -1,5 +1,5 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { UserAttributes } from "../../types";
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { UserAttributes } from "../../types/index.js";
 
 
 export async function getUsers(userId: number | null) {

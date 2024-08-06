@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,19 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateToken = void 0;
-const passport_1 = __importDefault(require("passport"));
-const passport_jwt_1 = require("passport-jwt");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const postgre_dao_1 = __importDefault(require("../dao/postgre.dao"));
-const environment_js_1 = require("../config/environment.js");
-passport_1.default.use('userJWT', new passport_jwt_1.Strategy({
-    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: environment_js_1.JWT_SECRET,
+import passport from 'passport';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import jwt from 'jsonwebtoken';
+import PostgreDAO from "../dao/postgre.dao.js";
+import { JWT_SECRET } from '../config/environment.js';
+passport.use('userJWT', new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: JWT_SECRET,
 }, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!payload.id) {
@@ -32,12 +26,12 @@ passport_1.default.use('userJWT', new passport_jwt_1.Strategy({
         return done(error);
     }
 })));
-passport_1.default.use('adminJWT', new passport_jwt_1.Strategy({
-    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: environment_js_1.JWT_SECRET,
+passport.use('adminJWT', new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: JWT_SECRET,
 }, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const postgreDAOInstance = yield postgre_dao_1.default.getInstance();
+        const postgreDAOInstance = yield PostgreDAO.getInstance();
         const user = yield postgreDAOInstance.getFromTable('users', { id: payload.id }, ['id', 'role']);
         if (!user || user[0].role !== 'ADMIN') {
             return done(null, false);
@@ -48,8 +42,7 @@ passport_1.default.use('adminJWT', new passport_jwt_1.Strategy({
         return done(error);
     }
 })));
-const generateToken = (id) => {
-    return jsonwebtoken_1.default.sign({ id }, environment_js_1.JWT_SECRET, { expiresIn: '1h' });
+export const generateToken = (id) => {
+    return jwt.sign({ id }, JWT_SECRET, { expiresIn: '1h' });
 };
-exports.generateToken = generateToken;
-exports.default = passport_1.default;
+export default passport;

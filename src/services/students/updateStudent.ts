@@ -1,5 +1,5 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { StudentUpdateAttributes } from "../../types";
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { StudentUpdateAttributes } from "../../types/index.js";
 
 export async function updateStudent(studentData: StudentUpdateAttributes) {
   try {

@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,21 +7,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmailHandler = void 0;
-const mail_1 = __importDefault(require("@sendgrid/mail"));
-const environment_js_1 = require("../config/environment.js");
-const email_templates_js_1 = __importDefault(require("../templates/email.templates.js"));
-mail_1.default.setApiKey(environment_js_1.SENDGRID_API_KEY);
-class EmailHandler {
+import sgMail from '@sendgrid/mail';
+import { SENDGRID_API_KEY } from "../config/environment.js";
+import emailTemplates from '../templates/email.templates.js';
+sgMail.setApiKey(SENDGRID_API_KEY);
+export class EmailHandler {
     constructor() { }
     static sendEmail(msg) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield mail_1.default.send(msg);
+                const response = yield sgMail.send(msg);
                 if (response[0].statusCode !== 202)
                     return { success: false, message: 'Email not sent' };
                 return { success: true, message: 'Email sent.' };
@@ -35,7 +29,7 @@ class EmailHandler {
     static sendVerificationEmail(email, fullname, verificationCode) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const msg = yield email_templates_js_1.default.confirmEmail(email, fullname, verificationCode);
+                const msg = yield emailTemplates.confirmEmail(email, fullname, verificationCode);
                 return yield this.sendEmail(msg);
             }
             catch (error) {
@@ -50,7 +44,7 @@ class EmailHandler {
     static sendForgotPasswordEmail(email, code) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const msg = yield email_templates_js_1.default.forgotPassword(email, code);
+                const msg = yield emailTemplates.forgotPassword(email, code);
                 return yield this.sendEmail(msg);
             }
             catch (error) {
@@ -63,4 +57,3 @@ class EmailHandler {
         });
     }
 }
-exports.EmailHandler = EmailHandler;

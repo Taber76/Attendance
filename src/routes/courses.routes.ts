@@ -1,4 +1,5 @@
 import express from 'express';
+
 import passport from '../middlewares/auth.mid.js';
 import ControllerHandler from '../controllers/courses.controller.js';
 

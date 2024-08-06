@@ -1,4 +1,4 @@
-import { updateStudent } from "./updateStudent";
+import { updateStudent } from "./updateStudent.js";
 
 export async function updateManyStudents(studentIds: number[], courseId: number) {
   try {

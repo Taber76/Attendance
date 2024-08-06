@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const HTTP_STATUS = Object.freeze({
     OK: 200,
     CREATED: 201,
@@ -10,4 +8,4 @@ const HTTP_STATUS = Object.freeze({
     NOT_FOUND: 404,
     INTERNAL_SERVER_ERROR: 500,
 });
-exports.default = HTTP_STATUS;
+export default HTTP_STATUS;

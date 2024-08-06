@@ -1,4 +1,5 @@
 import sgMail from '@sendgrid/mail'
+
 import { SENDGRID_API_KEY } from "../config/environment.js"
 import emailTemplates from '../templates/email.templates.js';
 

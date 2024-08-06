@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,8 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_client_js_1 = require("../config/prisma.client.js");
+import { prisma } from '../config/prisma.client.js';
 const AttendanceController = {
     register: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -21,7 +19,7 @@ const AttendanceController = {
                     message: 'Valid studentId and subjectId is required',
                 });
             }
-            const student = yield prisma_client_js_1.prisma.student.findUnique({
+            const student = yield prisma.student.findUnique({
                 where: {
                     id: studentId,
                     active: true
@@ -37,7 +35,7 @@ const AttendanceController = {
                     message: 'Student not found',
                 });
             }
-            yield prisma_client_js_1.prisma.attendance.create({
+            yield prisma.attendance.create({
                 data: {
                     date: new Date(),
                     subjectId,
@@ -56,7 +54,7 @@ const AttendanceController = {
     getNotAttendedByStudent: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const studentId = parseInt(req.params.studentId);
-            const nonattendances = yield prisma_client_js_1.prisma.nonattendance.findMany({
+            const nonattendances = yield prisma.nonattendance.findMany({
                 where: {
                     studentId
                 },
@@ -77,7 +75,7 @@ const AttendanceController = {
         try {
             const id = parseInt(req.params.nonAttendanceId);
             const type = req.params.type;
-            const notAttended = yield prisma_client_js_1.prisma.nonattendance.update({
+            const notAttended = yield prisma.nonattendance.update({
                 where: {
                     id
                 },
@@ -95,4 +93,4 @@ const AttendanceController = {
         }
     }),
 };
-exports.default = AttendanceController;
+export default AttendanceController;

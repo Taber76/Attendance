@@ -1,6 +1,5 @@
-import PostgreDAO from "../../dao/postgre.dao";
-import { CourseAttributes } from "../../types";
-
+import PostgreDAO from "../../dao/postgre.dao.js";
+import { CourseAttributes } from "../../types/index.js";
 
 export async function getCourses(courseId: number | null, active: boolean) {
   try {

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import HTTP_STATUS from "../constants/httpStatusCodes";
 
-
+import HTTP_STATUS from "../constants/httpStatusCodes.js";
 
 export function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
   console.log(error.stack)
