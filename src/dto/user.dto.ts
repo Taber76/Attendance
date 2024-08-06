@@ -166,6 +166,7 @@ export default class UserDTO {
 
     const response: any = {
       id: parseInt(user.id as string),
+      updatedAt: new Date()
     };
     if (fullname) response.fullname = fullname;
     if (username) response.username = username;

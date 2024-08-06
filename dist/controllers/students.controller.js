@@ -45,6 +45,21 @@ class StudentsController {
             }
         });
     }
+    // -- Update many Students -- Only courseId
+    static updateMany(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { studentIds, courseId } = req.body;
+            try {
+                const result = yield (0, services_1.updateManyStudents)(studentIds, courseId);
+                if (!result)
+                    return controllers_handler_1.default.notFound('Students not updated.', res);
+                return controllers_handler_1.default.ok('Students updated successfully.', res);
+            }
+            catch (err) {
+                next(err);
+            }
+        });
+    }
     // -- Get student/s --
     static getStudents(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {

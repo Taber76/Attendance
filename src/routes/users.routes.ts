@@ -1,6 +1,5 @@
 import express from 'express';
 import passport from '../middlewares/auth.mid.js';
-import UsersControllerOLD from '../controllers/users.controller.old.js';
 import UsersController from '../controllers/users.controller.js';
 
 export const usersRouter = express
@@ -24,7 +23,7 @@ const adminProtectedRoutes = express.Router()
   .get('/:user_id', UsersController.getUsers) //ok
   .post('/admin/register', UsersController.register) //ok
   .put('/update/:user_id', UsersController.update)
-  .delete('/delete/:user_id', UsersControllerOLD.delete)
+//.delete('/delete/:user_id', UsersControllerOLD.delete)
 usersRouter.use(adminProtectedRoutes)
 
 

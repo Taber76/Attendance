@@ -27,7 +27,7 @@ function forgotPassword(user) {
                 throw new Error("User not found");
             const verificationCode = user_helper_1.UserHelper.createCode();
             memory_storage_1.default.addVerificationCode(email, verificationCode);
-            const emailSent = yield email_handler_1.EmailHandler.sendVerificationEmail(email, existingUser[0].fullname, verificationCode);
+            const emailSent = yield email_handler_1.EmailHandler.sendForgotPasswordEmail(email, verificationCode);
             if (!emailSent)
                 throw new Error("Unable to send verification email");
             return Object.assign(Object.assign({}, existingUser[0]), { password: null });

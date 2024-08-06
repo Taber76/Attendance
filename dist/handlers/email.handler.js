@@ -17,26 +17,6 @@ const mail_1 = __importDefault(require("@sendgrid/mail"));
 const environment_js_1 = require("../config/environment.js");
 const email_templates_js_1 = __importDefault(require("../templates/email.templates.js"));
 mail_1.default.setApiKey(environment_js_1.SENDGRID_API_KEY);
-function sendEmail(email) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const msg = {
-                to: email.to,
-                from: 'sync.ideas.group@gmail.com',
-                subject: email.subject,
-                text: email.text,
-                html: email.html,
-            };
-            yield mail_1.default.send(msg);
-            return { result: true };
-        }
-        catch (error) {
-            console.error(error);
-            return { result: false, error };
-        }
-    });
-}
-exports.default = sendEmail;
 class EmailHandler {
     constructor() { }
     static sendEmail(msg) {
@@ -62,6 +42,21 @@ class EmailHandler {
                 return {
                     success: false,
                     message: 'Error sending verification email.',
+                    error
+                };
+            }
+        });
+    }
+    static sendForgotPasswordEmail(email, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const msg = yield email_templates_js_1.default.forgotPassword(email, code);
+                return yield this.sendEmail(msg);
+            }
+            catch (error) {
+                return {
+                    success: false,
+                    message: 'Error sending forgot password email.',
                     error
                 };
             }

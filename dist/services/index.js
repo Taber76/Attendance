@@ -24,6 +24,7 @@ __exportStar(require("./users/getUsers"), exports);
 __exportStar(require("./students/getStudents"), exports);
 __exportStar(require("./students/registerStudent"), exports);
 __exportStar(require("./students/updateStudent"), exports);
+__exportStar(require("./students/updateManyStudents"), exports);
 __exportStar(require("./students/registerStudentsWithExcel"), exports);
 __exportStar(require("./courses/getCourses"), exports);
 __exportStar(require("./courses/registerCourse"), exports);

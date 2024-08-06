@@ -17,9 +17,8 @@ export async function forgotPassword(user: { email: string }) {
     const verificationCode = UserHelper.createCode();
 
     MemoryStorage.addVerificationCode(email, verificationCode);
-    const emailSent = await EmailHandler.sendVerificationEmail(
+    const emailSent = await EmailHandler.sendForgotPasswordEmail(
       email,
-      existingUser[0].fullname,
       verificationCode
     )
     if (!emailSent) throw new Error("Unable to send verification email");

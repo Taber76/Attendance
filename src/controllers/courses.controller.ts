@@ -20,7 +20,7 @@ export default class CoursesController {
     }
   }
 
-  // -- Update a Student --
+  // -- Update a Course --
   public static async update(req: Request, res: Response, next: NextFunction) {
     const course_id = parseInt(req.params.course_id as string);
     try {

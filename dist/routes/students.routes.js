@@ -18,4 +18,5 @@ exports.studentsRouter = express_1.default
     .get('/course/:course_id', students_controller_js_1.default.getStudents)
     .post('/register', students_controller_js_1.default.register)
     .post('/excel-import', (0, multer_1.default)().single('file'), students_controller_js_1.default.excelImport)
-    .put('/update/:student_id', students_controller_js_1.default.update);
+    .put('/update/:student_id', students_controller_js_1.default.update)
+    .put('/update-many', students_controller_js_1.default.updateMany); // Only courseId in body { studentIds: [1,2,3,...], courseId: 4 }

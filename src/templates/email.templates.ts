@@ -87,7 +87,6 @@ const emailTemplates = {
             margin-top: 20px;
             font-family: Arial, sans-serif;
             font-size: 48px;
-            display: flex;
             justify-content: center;
             align-items: center;
             height: 100px;

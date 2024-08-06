@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const auth_mid_js_1 = __importDefault(require("../middlewares/auth.mid.js"));
-const users_controller_old_js_1 = __importDefault(require("../controllers/users.controller.old.js"));
 const users_controller_js_1 = __importDefault(require("../controllers/users.controller.js"));
 exports.usersRouter = express_1.default
     .Router() // Path: /api/users
@@ -25,6 +24,6 @@ const adminProtectedRoutes = express_1.default.Router()
     .get('/', users_controller_js_1.default.getUsers) //ok
     .get('/:user_id', users_controller_js_1.default.getUsers) //ok
     .post('/admin/register', users_controller_js_1.default.register) //ok
-    .put('/update/:user_id', users_controller_js_1.default.update)
-    .delete('/delete/:user_id', users_controller_old_js_1.default.delete);
+    .put('/update/:user_id', users_controller_js_1.default.update);
+//.delete('/delete/:user_id', UsersControllerOLD.delete)
 exports.usersRouter.use(adminProtectedRoutes);
