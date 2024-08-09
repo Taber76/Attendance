@@ -6,6 +6,6 @@ export const attendanceRouter = express
     // -- Middlewares --
     .use(passport.authenticate('userJWT', { session: false }))
     // -- Routes --
-    .get('/attendance/getByStudent/:studentId', AttendanceController.getNotAttendedByStudent)
-    .post('/attendance/register/:studentId', AttendanceController.register)
-    .put('/attendance/update/:nonAttendanceId/:type', AttendanceController.updateNotAttendedById);
+    .get('/attendance/getByStudent/:student_id', AttendanceController.getNotAttendedByStudent)
+    .post('/attendance/register', AttendanceController.register)
+    .put('/attendance/update/:nonAttendance_id/:type', AttendanceController.updateNotAttendedById);

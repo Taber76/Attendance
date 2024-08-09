@@ -3,7 +3,6 @@ import express from 'express';
 import passport from '../middlewares/auth.mid.js';
 import AttendanceController from '../controllers/attendance.controller.js';
 
-
 export const attendanceRouter = express
   .Router()
 
@@ -11,9 +10,9 @@ export const attendanceRouter = express
   .use(passport.authenticate('userJWT', { session: false }))
 
   // -- Routes --
-  .get('/attendance/getByStudent/:studentId', AttendanceController.getNotAttendedByStudent)
+  .get('/attendance/getByStudent/:student_id', AttendanceController.getNotAttendedByStudent)
 
-  .post('/attendance/register/:studentId', AttendanceController.register)
+  .post('/attendance/register', AttendanceController.register)
 
-  .put('/attendance/update/:nonAttendanceId/:type', AttendanceController.updateNotAttendedById)
+  .put('/attendance/update/:nonAttendance_id/:type', AttendanceController.updateNotAttendedById)
 

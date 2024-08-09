@@ -1,94 +1,52 @@
-import { Request, Response } from 'express-serve-static-core';
-import { prisma } from '../config/prisma.client.js';
+import { type Request, type Response, type NextFunction } from "express";
 
-const AttendanceController = {
+import ControllerHandler from "../handlers/controllers.handler.js";
+import {
+  getNonAttendance,
+  registerAttendance,
+  updateNotAttendedById
+} from "../services/index.js";
+import { NonAttendanceType } from "../types/nonattendance.types.js";
 
-  register: async (req: Request, res: Response) => {
+export default class CoursesController {
+  private constructor() { }
+
+  // -- Register attendance --
+  public static async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const studentId = parseInt(req.params.studentId as string)
-      const subjectId = 67 //parseInt(req.params.subjectId as string)
-      if (!studentId || !subjectId) {
-        return res.status(400).json({
-          result: false,
-          message: 'Valid studentId and subjectId is required',
-        })
-      }
-      const student = await prisma.student.findUnique({
-        where: {
-          id: studentId,
-          active: true
-        },
-        select: {
-          name: true,
-          surname: true
-        }
-
-      })
-      if (!student) {
-        return res.status(404).json({
-          result: false,
-          message: 'Student not found',
-        })
-      }
-      await prisma.attendance.create({
-        data: {
-          date: new Date(),
-          subjectId,
-          studentId,
-        }
-      })
-      return res.status(201).json({
-        result: true,
-        student: student.name,
-      })
-
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+      const attendanceData = await registerAttendance(req.body);
+      if (!attendanceData.result) return ControllerHandler.badRequest(attendanceData.message, res)
+      return ControllerHandler.created('Registered attendance', attendanceData.course, res)
+    } catch (err) {
+      next(err);
     }
+  }
 
-  },
-
-  getNotAttendedByStudent: async (req: Request, res: Response) => {
+  // -- Update not attended --
+  public static async updateNotAttendedById(req: Request, res: Response, next: NextFunction) {
+    const nonAttendance_id = parseInt(req.params.nonAttendance_id as string);
+    const type = req.params.type as string;
     try {
-      const studentId = parseInt(req.params.studentId as string)
-      const nonattendances = await prisma.nonattendance.findMany({
-        where: {
-          studentId
-        },
-        orderBy: {
-          date: 'asc'
-        }
-      })
-      return res.status(200).json({
-        result: true,
-        nonattendances
-      })
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+      const result = await updateNotAttendedById({ id: nonAttendance_id, type: type as NonAttendanceType });
+      if (!result) return ControllerHandler.notFound('Non attendance not updated.', res)
+      return ControllerHandler.ok('Non attendance updated successfully.', res)
+    } catch (err) {
+      next(err);
     }
-  },
+  }
 
-  updateNotAttendedById: async (req: Request, res: Response) => {
+  // -- Get not attended --
+  public static async getNotAttendedByStudent(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = parseInt(req.params.nonAttendanceId as string)
-      const type = req.params.type as 'UNJUSTIFIED' | 'JUSTIFIED' | 'LATE' | 'DELETED'
-      const notAttended = await prisma.nonattendance.update({
-        where: {
-          id
-        },
-        data: {
-          type
-        }
-      })
-      return res.status(200).json({
-        result: true,
-        notAttended
-      })
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
+      const studentId = parseInt(req.params.student_id as string);
+      const nonAttendances = await getNonAttendance(studentId);
+      if (!nonAttendances || nonAttendances.length === 0) return ControllerHandler.notFound('Non attendances not found', res)
+      return ControllerHandler.ok('Non attendances found', res, nonAttendances)
+    } catch (err) {
+      next(err);
     }
-  },
+  }
 
 }
 
-export default AttendanceController
+

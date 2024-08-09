@@ -19,5 +19,5 @@ export interface NonAttendanceCreationAttributes
 }
 
 export interface NonAttendanceUpdateAttributes
-  extends Omit<NonAttendanceAttributes, 'date' | 'student_id' | 'subject_id' | 'course_id'> {
+  extends Partial<Omit<NonAttendanceAttributes, 'date' | 'student_id' | 'subject_id' | 'course_id'>> {
 }
