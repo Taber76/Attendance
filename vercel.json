@@ -3,14 +3,14 @@
   "buildCommand": "npm run build",
   "builds": [
     {
-      "src": "build/app.js",
+      "src": "dist/app.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "build/app.js"
+      "dest": "dist/app.js"
     }
   ],
   "crons": [
