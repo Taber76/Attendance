@@ -1,12 +1,10 @@
 import express from 'express';
 import multer from 'multer';
-import passport from '../middlewares/auth.mid.js';
 import StudentsController from '../controllers/students.controller.js';
-export const studentsRouter = express
-    .Router() // Path: /api/students
-    // -- Middlewares --
-    .use(passport.authenticate('userJWT', { session: false }))
-    // -- Routes --
+// Path: /api/students
+// -- User protected routes --
+export const userProtectedRoutes = express
+    .Router()
     .get('/', StudentsController.getStudents)
     .get('/:student_id', StudentsController.getStudents) // if student_id 0 => get all deleted
     .get('/course/:course_id', StudentsController.getStudents)

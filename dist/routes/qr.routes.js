@@ -1,6 +1,7 @@
 import express from 'express';
 import QRController from '../controllers/qr.controller.js';
-export const qrRouter = express
-    .Router() // Path: /api/qr
-    // -- Routes --
+// Path: /api/qr
+// -- Not protected routes --
+export const notProtectedRoutes = express
+    .Router()
     .post('/create', QRController.create);

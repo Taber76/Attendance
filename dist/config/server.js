@@ -15,7 +15,14 @@ import hpp from 'hpp';
 import { PORT, API_VERSION, CORS_ORIGIN } from './environment.js';
 import { errorHandler } from '../middlewares/error.middleware.js';
 import PostgrePool from './postgre.pool.js';
-import { usersRouter, studentsRouter, subjectsRouter, coursesRouter, attendanceRouter, qrRouter, cronRouter } from '../routes/index.js';
+import passport from '../middlewares/auth.mid.js';
+import * as usersRouter from '../routes/users.routes.js';
+import * as studentsRouter from '../routes/students.routes.js';
+import * as subjectsRouter from '../routes/subjects.routes.js';
+import * as coursesRouter from '../routes/courses.routes.js';
+import * as attendanceRouter from '../routes/attendance.routes.js';
+import * as cronRouter from '../routes/cron.routes.js';
+import * as qrRouter from '../routes/qr.routes.js';
 export default class Server {
     constructor() {
         this.app = express();
@@ -47,13 +54,20 @@ export default class Server {
         this.app.use(express.json());
     }
     routes() {
-        this.app.use(`/${API_VERSION}/users`, usersRouter);
-        this.app.use(`/${API_VERSION}/students`, studentsRouter);
-        this.app.use(`/${API_VERSION}/subjects`, subjectsRouter);
-        this.app.use(`/${API_VERSION}/courses`, coursesRouter);
-        this.app.use(`/${API_VERSION}/attendance`, attendanceRouter);
-        this.app.use(`/${API_VERSION}/qr`, qrRouter);
-        this.app.use(`/${API_VERSION}/cron`, cronRouter);
+        // -- Unprotected routes --
+        this.app.use(`/${API_VERSION}/users`, usersRouter.notProtectedRoutes);
+        this.app.use(`/${API_VERSION}/cron`, cronRouter.notProtectedRoutes);
+        this.app.use(`/${API_VERSION}/qr`, qrRouter.notProtectedRoutes);
+        // -- User protected routes --
+        this.app.use(passport.authenticate('userJWT', { session: false }));
+        this.app.use(`/${API_VERSION}/users`, usersRouter.userProtectedRoutes);
+        this.app.use(`/${API_VERSION}/students`, studentsRouter.userProtectedRoutes);
+        this.app.use(`/${API_VERSION}/subjects`, attendanceRouter.userProtectedRoutes);
+        // -- Admin protected routes --
+        this.app.use(passport.authenticate('adminJWT', { session: false }));
+        this.app.use(`/${API_VERSION}/users`, usersRouter.adminProtectedRoutes);
+        this.app.use(`/${API_VERSION}/students`, coursesRouter.adminProtectedRoutes);
+        this.app.use(`/${API_VERSION}/subjects`, subjectsRouter.adminProtectedRoutes);
     }
     errorHandler() {
         this.app.use(errorHandler);
