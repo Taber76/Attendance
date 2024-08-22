@@ -5,7 +5,7 @@ import { UserAttributes } from "../../types/index.js";
 export async function getUsers(userId: number | null) {
   try {
     const postgreDAOInstance = await PostgreDAO.getInstance();
-    const whereQuery: any = {};
+    const whereQuery: any = { active: true };
     const selectQuery: (keyof UserAttributes)[] = ['id', 'email', 'fullname', 'role', 'active', 'createdAt', 'updatedAt'];
     if (userId) whereQuery['id'] = userId;
 

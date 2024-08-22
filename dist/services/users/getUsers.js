@@ -12,7 +12,7 @@ export function getUsers(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const postgreDAOInstance = yield PostgreDAO.getInstance();
-            const whereQuery = {};
+            const whereQuery = { active: true };
             const selectQuery = ['id', 'email', 'fullname', 'role', 'active', 'createdAt', 'updatedAt'];
             if (userId)
                 whereQuery['id'] = userId;
