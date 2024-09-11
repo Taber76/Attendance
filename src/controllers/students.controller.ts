@@ -35,11 +35,11 @@ export default class StudentsController {
     }
   }
 
-  // -- Update many Students -- Only courseId
+  // -- Update many Students -- Only course_id
   public static async updateMany(req: Request, res: Response, next: NextFunction) {
-    const { studentIds, courseId } = req.body;
+    const { studentIds, course_id } = req.body;
     try {
-      const result = await updateManyStudents(studentIds, courseId);
+      const result = await updateManyStudents(studentIds, course_id);
       if (!result) return ControllerHandler.notFound('Students not updated.', res)
       return ControllerHandler.ok('Students updated successfully.', res)
     } catch (err) {
@@ -51,9 +51,9 @@ export default class StudentsController {
   public static async getStudents(req: Request, res: Response, next: NextFunction) {
     try {
       const studentId = req.params.student_id ? parseInt(req.params.student_id as string) : null;
-      const courseId = req.params.course_id ? parseInt(req.params.course_id as string) : null;
+      const course_id = req.params.course_id ? parseInt(req.params.course_id as string) : null;
       const active = studentId === 0 ? false : true;
-      const students = await getStudents(studentId, active, courseId);
+      const students = await getStudents(studentId, active, course_id);
       if (!students) return ControllerHandler.notFound('Students not found', res)
       return ControllerHandler.ok('Students found', res, students)
     } catch (err) {

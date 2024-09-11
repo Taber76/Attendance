@@ -7,7 +7,10 @@ import AttendanceController from '../controllers/attendance.controller.js';
 // -- User protected routes --
 export const userProtectedRoutes = express
   .Router()
-  .get('/attendance/getByStudent/:student_id', AttendanceController.getNotAttendedByStudent)
-  .post('/attendance/register', AttendanceController.register)
-  .put('/attendance/update/:nonAttendance_id/:type', AttendanceController.updateNotAttendedById)
+  .get('/getByStudent/:student_id', AttendanceController.getNotAttendedByStudent)
+  .get('/getByDate/:date/:course_id', AttendanceController.getAttendanceByDate)
+
+  .post('/register', AttendanceController.register)
+
+  .put('/update/:nonAttendance_id/:type', AttendanceController.updateNotAttendedById)
 

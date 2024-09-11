@@ -4,7 +4,7 @@ import SubjectsController from '../controllers/subjects.controller.js';
 // -- Admin protected routes --
 export const adminProtectedRoutes = express
     .Router()
-    .get('/', SubjectsController.getAll) // '/subjects' para traer todos los subjects y '/subjects?courseId=4' para traer los subjects filtadas por course
+    .get('/', SubjectsController.getAll) // '/subjects' para traer todos los subjects y '/subjects?course_id=4' para traer los subjects filtadas por course
     .post('/register', SubjectsController.create)
     .put('/update/:subject_id', SubjectsController.update)
     .put('/addstudents/:subject_id', SubjectsController.addStudents)

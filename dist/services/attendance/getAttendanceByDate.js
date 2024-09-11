@@ -8,21 +8,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import PostgreDAO from "../../dao/postgre.dao.js";
-export function getStudents(studentId, active, course_id) {
+export function getAttendanceByDate(date, course_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const postgreDAOInstance = yield PostgreDAO.getInstance();
-            const whereQuery = { active };
-            if (course_id)
-                whereQuery['course_id'] = course_id;
-            const selectQuery = ['id', 'name', 'surname', 'contact_phone', 'contact_email', 'birthdate', 'personal_id', 'active', 'course_id', 'createdAt', 'updatedAt'];
-            if (studentId)
-                whereQuery['id'] = studentId;
-            const result = yield postgreDAOInstance.getFromTable("students", whereQuery, selectQuery);
-            return result;
+            const result = yield postgreDAOInstance.executeQuery(query, [date, course_id]);
+            return result.rows;
         }
         catch (err) {
             throw err;
         }
     });
 }
+const query = `
+  SELECT
+    s.id,
+    s.name,
+    s.surname,
+    s.course_id,
+    a.date,
+    CASE 
+      WHEN a.student_id IS NOT NULL THEN true 
+      ELSE false 
+      END AS attended  
+  FROM students s
+  LEFT JOIN attendances a ON s.id = a.student_id AND a.date::date = $1
+  WHERE ($2::INT IS NULL OR s.course_id = $2)
+`;

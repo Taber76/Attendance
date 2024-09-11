@@ -11,20 +11,20 @@ import { prisma } from '../config/prisma.client.js';
 const SubjectsController = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { name, courseId, teacherId, schelude, startSubject, endSubject, students } = req.body;
-            if (!name || !courseId) {
+            const { name, course_id, teacherId, schelude, startSubject, endSubject, students } = req.body;
+            if (!name || !course_id) {
                 return res
                     .status(400)
                     .json({
                     result: false,
-                    message: 'Fields name and courseId are required',
+                    message: 'Fields name and course_id are required',
                 });
             }
             else {
                 const subject = yield prisma.subject.findFirst({
                     where: {
                         name,
-                        courseId,
+                        //     courseId,
                     }
                 });
                 if (subject) {
@@ -36,7 +36,7 @@ const SubjectsController = {
             }
             const subjectData = {
                 name,
-                courseId: parseInt(courseId),
+                course_id: parseInt(course_id),
                 schelude: schelude ? schelude : [],
                 startSubjet: startSubject ? startSubject : null,
                 endSubject: endSubject ? endSubject : null,
@@ -72,7 +72,7 @@ const SubjectsController = {
                     message: 'Id is required',
                 });
             }
-            const { name, teacherId, courseId, schelude, startSubject, endSubject, active, students } = req.body;
+            const { name, teacherId, course_id, schelude, startSubject, endSubject, active, students } = req.body;
             // Preparar los datos para la actualización
             const data = {
                 updatedAt: new Date(),
@@ -81,8 +81,8 @@ const SubjectsController = {
                 data.name = name;
             if (teacherId !== undefined)
                 data.teacherId = teacherId;
-            if (courseId !== undefined)
-                data.courseId = courseId;
+            if (course_id !== undefined)
+                data.course_id = course_id;
             if (schelude !== undefined)
                 data.schelude = schelude;
             if (startSubject !== undefined)
@@ -180,13 +180,13 @@ const SubjectsController = {
         }
     }),
     getAll: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const courseId = parseInt(req.query.courseId);
+        const course_id = parseInt(req.query.course_id);
         try {
-            if (courseId) {
+            if (course_id) {
                 const subjects = yield prisma.subject.findMany({
                     where: {
                         active: true,
-                        courseId,
+                        // courseId,
                     },
                 });
                 if (!subjects || subjects.length === 0) {

@@ -15,4 +15,4 @@ export const userProtectedRoutes = express
   .post('/excel-import', multer().single('file'), StudentsController.excelImport)
 
   .put('/update/:student_id', StudentsController.update)
-  .put('/update-many', StudentsController.updateMany) // Only courseId in body { studentIds: [1,2,3,...], courseId: 4 }
+  .put('/update-many', StudentsController.updateMany) // Only course_id in body { studentIds: [1,2,3,...], course_id: 4 }

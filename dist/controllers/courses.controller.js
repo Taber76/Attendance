@@ -44,9 +44,9 @@ export default class CoursesController {
     static getCourses(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const courseId = req.params.course_id ? parseInt(req.params.course_id) : null;
-                const active = courseId === 0 ? false : true;
-                const courses = yield getCourses(courseId, active);
+                const course_id = req.params.course_id ? parseInt(req.params.course_id) : null;
+                const active = course_id === 0 ? false : true;
+                const courses = yield getCourses(course_id, active);
                 if (!courses || courses.length === 0)
                     return ControllerHandler.notFound('Courses not found', res);
                 return ControllerHandler.ok('Courses found', res, courses);

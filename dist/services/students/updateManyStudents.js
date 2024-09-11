@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { updateStudent } from "./updateStudent.js";
-export function updateManyStudents(studentIds, courseId) {
+export function updateManyStudents(studentIds, course_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const promises = studentIds.map((studentId) => __awaiter(this, void 0, void 0, function* () {
-                yield updateStudent({ id: studentId, courseId });
+                yield updateStudent({ id: studentId, course_id });
             }));
             yield Promise.all(promises);
             return true;

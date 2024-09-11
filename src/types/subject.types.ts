@@ -2,7 +2,7 @@ export interface SubjectAttributes {
   id: number;
   name: string;
   teacherId: number;
-  courseId: number;
+  course_id: number;
   schedule: JSON[];
   startSubject: Date;
   endSubject: Date;

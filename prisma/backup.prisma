@@ -75,8 +75,8 @@ model Subject {
   name           String
   teacher        User?           @relation(fields: [teacherId], references: [id])
   teacherId      Int?
-  course         Course?         @relation(fields: [courseId], references: [id])
-  courseId       Int?
+  course         Course?         @relation(fields: [course_id], references: [id])
+  course_id      Int?
   schelude       Json[]
   startSubjet    DateTime?
   endSubject     DateTime?

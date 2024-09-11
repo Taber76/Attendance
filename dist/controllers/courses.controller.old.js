@@ -155,7 +155,7 @@ const CoursesController = {
                             id: subjectId
                         },
                         data: {
-                            courseId: id
+                            course_id: id
                         }
                     });
                 }

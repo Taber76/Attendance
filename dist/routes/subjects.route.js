@@ -12,7 +12,7 @@ exports.subjectsRouter = express_1.default
     // -- Middlewares --
     .use(auth_mid_js_1.default.authenticate('adminJWT', { session: false }))
     // -- Routes --
-    .get('/', subjects_controller_js_1.default.getAll) // '/subjects' para traer todos los subjects y '/subjects?courseId=4' para traer los subjects filtadas por course
+    .get('/', subjects_controller_js_1.default.getAll) // '/subjects' para traer todos los subjects y '/subjects?course_id=4' para traer los subjects filtadas por course
     .post('/register', subjects_controller_js_1.default.create)
     .put('/update/:subject_id', subjects_controller_js_1.default.update)
     .put('/addstudents/:subject_id', subjects_controller_js_1.default.addStudents)

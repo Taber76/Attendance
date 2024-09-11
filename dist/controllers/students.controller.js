@@ -40,12 +40,12 @@ export default class StudentsController {
             }
         });
     }
-    // -- Update many Students -- Only courseId
+    // -- Update many Students -- Only course_id
     static updateMany(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { studentIds, courseId } = req.body;
+            const { studentIds, course_id } = req.body;
             try {
-                const result = yield updateManyStudents(studentIds, courseId);
+                const result = yield updateManyStudents(studentIds, course_id);
                 if (!result)
                     return ControllerHandler.notFound('Students not updated.', res);
                 return ControllerHandler.ok('Students updated successfully.', res);
@@ -60,9 +60,9 @@ export default class StudentsController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const studentId = req.params.student_id ? parseInt(req.params.student_id) : null;
-                const courseId = req.params.course_id ? parseInt(req.params.course_id) : null;
+                const course_id = req.params.course_id ? parseInt(req.params.course_id) : null;
                 const active = studentId === 0 ? false : true;
-                const students = yield getStudents(studentId, active, courseId);
+                const students = yield getStudents(studentId, active, course_id);
                 if (!students)
                     return ControllerHandler.notFound('Students not found', res);
                 return ControllerHandler.ok('Students found', res, students);

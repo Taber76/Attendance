@@ -63,11 +63,13 @@ export default class Server {
         this.app.use(`/${API_VERSION}/users`, usersRouter.userProtectedRoutes);
         this.app.use(`/${API_VERSION}/students`, studentsRouter.userProtectedRoutes);
         this.app.use(`/${API_VERSION}/subjects`, attendanceRouter.userProtectedRoutes);
+        this.app.use(`/${API_VERSION}/attendances`, attendanceRouter.userProtectedRoutes);
         // -- Admin protected routes --
         this.app.use(passport.authenticate('adminJWT', { session: false }));
         this.app.use(`/${API_VERSION}/users`, usersRouter.adminProtectedRoutes);
         this.app.use(`/${API_VERSION}/students`, coursesRouter.adminProtectedRoutes);
         this.app.use(`/${API_VERSION}/subjects`, subjectsRouter.adminProtectedRoutes);
+        this.app.use(`/${API_VERSION}/courses`, coursesRouter.adminProtectedRoutes);
     }
     errorHandler() {
         this.app.use(errorHandler);

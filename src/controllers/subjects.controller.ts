@@ -5,19 +5,19 @@ const SubjectsController = {
 
   create: async (req: Request, res: Response) => {
     try {
-      const { name, courseId, teacherId, schelude, startSubject, endSubject, students } = req.body;
-      if (!name || !courseId) {
+      const { name, course_id, teacherId, schelude, startSubject, endSubject, students } = req.body;
+      if (!name || !course_id) {
         return res
           .status(400)
           .json({
             result: false,
-            message: 'Fields name and courseId are required',
+            message: 'Fields name and course_id are required',
           });
       } else {
         const subject = await prisma.subject.findFirst({
           where: {
             name,
-            courseId,
+            //     courseId,
           }
         });
         if (subject) {
@@ -29,7 +29,7 @@ const SubjectsController = {
       }
       const subjectData: any = {
         name,
-        courseId: parseInt(courseId as string),
+        course_id: parseInt(course_id as string),
         schelude: schelude ? schelude : [],
         startSubjet: startSubject ? startSubject : null,
         endSubject: endSubject ? endSubject : null,
@@ -71,7 +71,7 @@ const SubjectsController = {
         });
       }
 
-      const { name, teacherId, courseId, schelude, startSubject, endSubject, active, students } = req.body;
+      const { name, teacherId, course_id, schelude, startSubject, endSubject, active, students } = req.body;
 
       // Preparar los datos para la actualización
       const data: any = {
@@ -80,7 +80,7 @@ const SubjectsController = {
 
       if (name !== undefined) data.name = name;
       if (teacherId !== undefined) data.teacherId = teacherId;
-      if (courseId !== undefined) data.courseId = courseId;
+      if (course_id !== undefined) data.course_id = course_id;
       if (schelude !== undefined) data.schelude = schelude;
       if (startSubject !== undefined) data.startSubject = startSubject;
       if (endSubject !== undefined) data.endSubject = endSubject;
@@ -176,13 +176,13 @@ const SubjectsController = {
   },
 
   getAll: async (req: Request, res: Response) => {
-    const courseId = parseInt(req.query.courseId as string);
+    const course_id = parseInt(req.query.course_id as string);
     try {
-      if (courseId) {
+      if (course_id) {
         const subjects = await prisma.subject.findMany({
           where: {
             active: true,
-            courseId,
+            // courseId,
           },
         });
         if (!subjects || subjects.length === 0) {

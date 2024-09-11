@@ -8,14 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import PostgreDAO from "../../dao/postgre.dao.js";
-export function getCourses(courseId, active) {
+export function getCourses(course_id, active) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const postgreDAOInstance = yield PostgreDAO.getInstance();
             const whereQuery = { active };
             const selectQuery = ['id', 'level', 'number', 'letter', 'active', 'createdAt', 'updatedAt'];
-            if (courseId)
-                whereQuery['id'] = courseId;
+            if (course_id)
+                whereQuery['id'] = course_id;
             const result = yield postgreDAOInstance.getFromTable("courses", whereQuery, selectQuery);
             return result;
         }

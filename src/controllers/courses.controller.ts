@@ -36,9 +36,9 @@ export default class CoursesController {
   // -- Get course/s --
   public static async getCourses(req: Request, res: Response, next: NextFunction) {
     try {
-      const courseId = req.params.course_id ? parseInt(req.params.course_id as string) : null;
-      const active = courseId === 0 ? false : true;
-      const courses = await getCourses(courseId, active);
+      const course_id = req.params.course_id ? parseInt(req.params.course_id as string) : null;
+      const active = course_id === 0 ? false : true;
+      const courses = await getCourses(course_id, active);
       if (!courses || courses.length === 0) return ControllerHandler.notFound('Courses not found', res)
       return ControllerHandler.ok('Courses found', res, courses)
     } catch (err) {

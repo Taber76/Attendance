@@ -2,12 +2,12 @@ import PostgreDAO from "../../dao/postgre.dao.js";
 import { StudentAttributes } from "../../types/index.js";
 
 
-export async function getStudents(studentId: number | null, active: boolean, courseId?: number | null) {
+export async function getStudents(studentId: number | null, active: boolean, course_id?: number | null) {
   try {
     const postgreDAOInstance = await PostgreDAO.getInstance();
     const whereQuery: any = { active };
-    if (courseId) whereQuery['courseId'] = courseId;
-    const selectQuery: (keyof StudentAttributes)[] = ['id', 'name', 'surname', 'contact_phone', 'contact_email', 'birthdate', 'personal_id', 'active', 'courseId', 'createdAt', 'updatedAt'];
+    if (course_id) whereQuery['course_id'] = course_id;
+    const selectQuery: (keyof StudentAttributes)[] = ['id', 'name', 'surname', 'contact_phone', 'contact_email', 'birthdate', 'personal_id', 'active', 'course_id', 'createdAt', 'updatedAt'];
     if (studentId) whereQuery['id'] = studentId;
 
     const result = await postgreDAOInstance.getFromTable<StudentAttributes>(
