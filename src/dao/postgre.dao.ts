@@ -84,7 +84,10 @@ export default class PostgreDAO {
       const whereValues = Object.values(where);
       const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + keys.length + 1)).join(', ');
 
-      const query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString}) WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
+      let query: string
+      keys.length === 1 ? query = `UPDATE ${table} SET ${keysString} = ${placeholdersString}` : query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString})`
+      whereKeys.length === 1 ? query += ` WHERE ${whereKeysString} = ${wherePlaceholdersString}` : query += ` WHERE (${whereKeysString}) = (${wherePlaceholdersString})`
+
       const result = await this.executeQuery(query, [...values, ...whereValues]);
       return result.rowCount
     } catch (err) {
