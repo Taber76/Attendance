@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "routes",
     "controllers",
-    "endpoints"
+    "endpoints",
+    "dao"
   ]
 }
