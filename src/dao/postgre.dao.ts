@@ -17,7 +17,6 @@ export default class PostgreDAO {
   }
 
 
-
   public async executeQuery(query: string, values?: any[]): Promise<any> {
     try {
       //console.log('QUERY: ', query);
