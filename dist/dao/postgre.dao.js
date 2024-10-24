@@ -89,7 +89,9 @@ class PostgreDAO {
                 const whereKeysString = whereKeys.join(', ');
                 const whereValues = Object.values(where);
                 const wherePlaceholdersString = whereValues.map((_, i) => '$' + (i + keys.length + 1)).join(', ');
-                const query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString}) WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
+                let query;
+                keys.length === 1 ? query = `UPDATE ${table} SET ${keysString} = ${placeholdersString}` : query = `UPDATE ${table} SET (${keysString}) = (${placeholdersString})`;
+                whereKeys.length === 1 ? query += ` WHERE ${whereKeysString} = ${wherePlaceholdersString}` : query += ` WHERE (${whereKeysString}) = (${wherePlaceholdersString})`;
                 const result = yield this.executeQuery(query, [...values, ...whereValues]);
                 return result.rowCount;
             }
